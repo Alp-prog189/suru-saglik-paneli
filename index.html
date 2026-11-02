@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sürü Sağlık Paneli</title>
+<style>
+:root{--bg:#edf2ef;--card:#fff;--ink:#14231e;--mut:#62736b;--line:#d9e2dd;--g:#2a8c58;--y:#c99a0b;--o:#d9702a;--r:#cc3b3b;--acc:#12503d;--soft:#e2ebe6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1713;--card:#18231e;--ink:#e6efe9;--mut:#91a499;--line:#273630;--g:#4cc283;--y:#efc24a;--o:#f2994f;--r:#ef6b6b;--acc:#7fd6a8;--soft:#1f2d27}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1713;--card:#18231e;--ink:#e6efe9;--mut:#91a499;--line:#273630;--g:#4cc283;--y:#efc24a;--o:#f2994f;--r:#ef6b6b;--acc:#7fd6a8;--soft:#1f2d27}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;padding-bottom:84px}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em}h2{font-size:17px;margin:22px 0 8px}
+.sub{color:var(--mut);font-size:13px;margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.tile{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 6px;text-align:center;cursor:pointer;color:var(--ink);font:inherit}
+.tile b{display:block;font-size:24px;line-height:1.1;color:var(--c)}.tile span{font-size:12px;color:var(--mut)}
+.tile[aria-pressed=true]{outline:2px solid var(--c);outline-offset:-2px}
+.g{--c:var(--g)}.y{--c:var(--y)}.o{--c:var(--o)}.r{--c:var(--r)}.n{--c:var(--mut)}
+input[type=search]{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;margin-bottom:10px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;margin-bottom:8px;text-decoration:none;color:inherit}
+.row .sc{font-size:22px;font-weight:700;color:var(--c);min-width:40px;text-align:right}
+.row .mid{flex:1;min-width:0}.row .mid b{display:block}.row .mid span{font-size:13px;color:var(--mut)}
+.chip{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--soft);color:var(--acc);margin-right:4px}
+.chip.w{background:var(--c);color:#fff}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav a{flex:1;max-width:160px;text-align:center;padding:12px 2px;text-decoration:none;color:var(--mut);font-size:13px}
+nav a[aria-current=page]{color:var(--acc);font-weight:700;box-shadow:inset 0 3px 0 var(--acc)}
+.back{display:inline-block;margin-bottom:10px;color:var(--acc);text-decoration:none;font-size:14px}
+.hero{display:flex;gap:16px;align-items:center}
+.ring{position:relative;width:96px;height:96px;flex:none}.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:30px;color:var(--c)}
+.bar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--c,var(--g))}
+.grp{margin:10px 0}.grp div{display:flex;justify-content:space-between;font-size:14px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px;min-width:420px}
+th{font-weight:600;color:var(--mut);text-align:left;font-size:12px;padding:6px 4px}td{padding:8px 4px;border-top:1px solid var(--line)}
+td.dev{font-weight:700;color:var(--c)}
+.al{border-left:5px solid var(--c);padding:12px 14px;margin-bottom:8px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:12px;display:block;color:inherit;text-decoration:none}
+.al p{margin:4px 0 0;font-size:14px;color:var(--mut)}
+.set label{display:flex;justify-content:space-between;font-size:14px;margin-top:14px}
+.set input[type=range]{width:100%;accent-color:var(--acc)}
+button{font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--soft);color:var(--ink);cursor:pointer}
+button.p{background:var(--acc);color:var(--card);border-color:var(--acc)}
+.note{font-size:13px;color:var(--mut)}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:90%}
+#toast.on{opacity:1}
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:10px}.frm .full{grid-column:1/-1}.frm label{font-size:13px;color:var(--mut);display:block;margin-bottom:3px}
+select,input[type=number],input[type=date],input[type=text]{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}
+.hd{display:flex;justify-content:space-between;align-items:center;gap:10px}.btn{display:inline-block;padding:9px 14px;border-radius:10px;background:var(--acc);color:var(--card);text-decoration:none;font-size:14px;white-space:nowrap}.row .mid .chip.w{color:#fff}
+textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:12px/1.3 monospace}
+.x{float:right;padding:4px 10px;font-size:13px}.kv{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--card);z-index:31}
+#top{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--card);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;padding:6px 10px;gap:8px}
+.tb{position:relative;display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:12px;background:var(--soft);border:1px solid var(--line);color:var(--ink)}
+.bd{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:var(--o);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center}.bd[hidden]{display:none}.bd.r{background:var(--r)}
+#sh{position:fixed;inset:0;z-index:40}.shbg{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+.shc{position:relative;max-width:640px;margin:calc(env(safe-area-inset-top,0px) + 58px) auto 0;background:var(--bg);border:1px solid var(--line);border-radius:0 0 16px 16px;max-height:calc(100% - 90px);overflow:auto;padding:14px 16px 18px}
+.shh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:18px}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mt>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}.mt b{display:block;font-size:21px;line-height:1.25;color:var(--c,var(--ink))}.mt span{display:block;font-size:12px;color:var(--mut)}
+#toast{z-index:60}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+</style></head><body>
+<header id="top"><button class="tb" id="bn" aria-label="Ahır paneli"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Ahır paneli</span></button><button class="tb" id="bb" aria-label="Alarmlar ve yaklaşan işler"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bd" id="bd" hidden></span></button></header>
+<main id="app"></main>
+<div id="sh" hidden role="dialog" aria-modal="true" aria-labelledby="sht"><div class="shbg"></div><div class="shc"><div class="shh"><b id="sht"></b><button id="shx">Kapat</button></div><div id="shb"></div></div></div>
+<nav id="nav"><a href="#suru">Sürü</a><a href="#alarmlar">Alarm</a><a href="#maliyet">Maliyet</a><a href="#receteler">Reçete</a><a href="#ayarlar">Puan</a></nav>
+<div id="toast" role="status"></div>
+<script>
+var GR={R:"Rumen ve sindirim",S:"Meme ve süt",A:"Aktivite ve yürüyüş",I:"İç ısı ve solunum",Y:"Yem ve su"};
+var cfg={w:{R:30,S:25,A:20,I:15,Y:10},fm:1.5};
+var M=[
+{k:"rum",g:"R",l:"Ruminasyon",u:"dk",b:500,d:"low",t:.08,c:.3},
+{k:"mot",g:"R",l:"Rumen kasılması",u:"/dk",b:2.5,d:"low",t:.15,c:.5},
+{k:"ilet",g:"S",l:"Süt iletkenliği",u:"mS",b:5,d:"high",t:.05,c:.2},
+{k:"sut",g:"S",l:"Süt verimi",u:"kg",b:32,d:"low",t:.08,c:.3},
+{k:"adm",g:"A",l:"Adım sayısı",u:"",b:3000,d:"both",t:.1,c:.5},
+{k:"yat",g:"A",l:"Yatma süresi",u:"dk",b:780,d:"both",t:.12,c:.4},
+{k:"ate",g:"I",l:"İç sıcaklık",u:"°C",b:38.6,d:"both",t:.3,c:1.2,abs:1},
+{k:"sol",g:"I",l:"Solunum",u:"/dk",b:35,d:"high",t:.15,c:.6},
+{k:"yem",g:"Y",l:"Yem yeme süresi",u:"dk",b:300,d:"low",t:.1,c:.4},
+{k:"su",g:"Y",l:"Su tüketimi",u:"L",b:90,d:"low",t:.1,c:.4}];
+var FRESH={103:9,112:18,118:14,125:2};
+var SC={104:{ilet:1.12,rum:.88,ate:"+0.4",sut:.95},112:{yem:.7,rum:.82,sut:.85,su:.9},117:{rum:.72,mot:.75,yem:.92},
+109:{adm:1.6,yat:.8,ate:"+0.3"},121:{yat:1.35,adm:.72,sut:.9},125:{ate:"-1.0",mot:.5,yem:.6,adm:.6},
+130:{sol:1.5,ate:"+0.7",yem:.9},107:{adm:1.15},115:{su:.8}};
+var seed=20260;function rnd(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}
+function mean(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+var cows=[];
+for(var i=0;i<30;i++){var id=101+i,dim=FRESH[id]!==undefined?FRESH[id]:Math.floor(25+rnd()*270),sut0=24+rnd()*16;
+ var c={id:id,dim:dim,lak:1+Math.floor(rnd()*4),fresh:dim<=21,hist:{},today:{},base:{}};
+ M.forEach(function(m){var b0=m.k==="sut"?sut0:m.k==="su"?sut0*2.8:m.b*(1+(rnd()-.5)*.1);
+  var h=[];for(var d=0;d<14;d++)h.push(m.abs?b0+(rnd()-.5)*.2:b0*(1+(rnd()-.5)*.05));
+  var t=m.abs?b0+(rnd()-.5)*.2:b0*(1+(rnd()-.5)*.04),s=(SC[id]||{})[m.k];
+  if(s!==undefined)t=typeof s==="string"?t+parseFloat(s):t*s;
+  c.hist[m.k]=h;c.base[m.k]=mean(h);c.today[m.k]=t});
+ cows.push(c)}
+function dv(c,k){var m=M.filter(function(x){return x.k===k})[0];return m.abs?c.today[k]-c.base[k]:(c.today[k]-c.base[k])/c.base[k]}
+function frac(m,c){var r=dv(c,m.k),x=m.d==="low"?-r:m.d==="high"?r:Math.abs(r);return Math.max(0,Math.min(1,(x-m.t)/(m.c-m.t)))}
+function calc(c){var W=cfg.w,sw=0,tot=0,gs={},n=0,g;for(g in W)sw+=W[g];sw=sw||1;
+ for(g in GR){var f=0;M.forEach(function(m){if(m.g===g)f=Math.max(f,frac(m,c))});
+  var w=W[g]/sw*100,d=f>0?w*(.2+.8*f):0;if(c.fresh)d=Math.min(w,d*cfg.fm);
+  gs[g]={w:w,d:d,f:f};tot+=d;if(f>.3)n++}
+ var s=100-tot;if(n>=2)s=Math.min(s,74);c.gs=gs;c.score=Math.round(Math.max(0,s));
+ c.cls=c.score>=90?"g":c.score>=75?"y":c.score>=60?"o":"r";
+ var top="";var mx=0;for(g in gs)if(gs[g].d>mx){mx=gs[g].d;top=GR[g]}c.top=top}
+var CL={g:["Yeşil","Rutin akış"],y:["Sarı","İzle, destek öner"],o:["Turuncu","Revire ayır"],r:["Kırmızı","Acil müdahale"]};
+var SEV=[["Bilgi","g"],["Uyarı","o"],["Acil","r"]];
+function recalc(){cows.forEach(calc);cows.forEach(function(c){c.al=RULES.filter(function(r){return r.t(c)})})}
+function fmt(m,v){return(m.k==="adm"||m.k==="yat"||m.k==="rum"?Math.round(v):m.abs||m.k==="mot"||m.k==="ilet"?v.toFixed(m.k==="ate"?1:2):v.toFixed(0))+(m.u?" "+m.u:"")}
+function spark(m,c){var h=c.hist[m.k].concat([c.today[m.k]]),lo=Math.min.apply(0,h),hi=Math.max.apply(0,h),p=(hi-lo)||1,W=90,H=26;
+ function y(v){return H-3-(v-lo)/p*(H-6)}
+ var pts=h.map(function(v,i){return(i*W/(h.length-1)).toFixed(1)+","+y(v).toFixed(1)}).join(" ");
+ return'<svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><line x1="0" x2="'+W+'" y1="'+y(c.base[m.k]).toFixed(1)+'" y2="'+y(c.base[m.k]).toFixed(1)+'" stroke="var(--mut)" stroke-dasharray="3 3"/><polyline points="'+pts+'" fill="none" stroke="var(--acc)" stroke-width="1.5"/><circle cx="'+W+'" cy="'+y(c.today[m.k]).toFixed(1)+'" r="3" fill="var(--c)"/></svg>'}
+var filt="",q="",app=document.getElementById("app");
+function toast(t){var e=document.getElementById("toast");e.textContent=t;e.className="on";clearTimeout(toast.h);toast.h=setTimeout(function(){e.className=""},2400)}
+function rowHtml(c){return'<a class="row '+c.cls+'" href="#inek-'+c.id+'"><div class="mid"><b>İnek '+c.id+'</b><span>Laktasyon '+c.lak+', '+c.dim+'. gün'+(c.fresh?" (taze)":"")+(c.top&&c.score<100?", en çok: "+c.top.toLowerCase():"")+'</span>'+(inWd(c.id).length?'<br><span class="chip w r">Süt arınmada</span>':"")+'</div><div class="sc">'+c.score+'</div></a>'}
+function viewSuru(){if(REAL())return viewSuruR();var cnt={g:0,y:0,o:0,r:0};cows.forEach(function(c){cnt[c.cls]++});
+ var avg=Math.round(mean(cows.map(function(c){return c.score})));
+ var list=cows.slice().sort(function(a,b){return a.score-b.score}).filter(function(c){return(!filt||c.cls===filt)&&(!q||String(c.id).indexOf(q)>-1)});
+ app.innerHTML='<div class="hd"><h1>Sürü sağlık paneli</h1><a class="btn" href="#hayvanlar">+ Hayvan</a></div><div class="sub">'+cows.length+' sağmal, sürü ortalaması '+avg+'. Veriler simülasyondur.</div><div class="card" style="margin-top:10px"><b>Demo veri gösteriliyor</b><p class="note" style="margin:4px 0 8px">Bu sayfadaki sürü ve olaylar simülasyondur. Kendi hayvanlarınla çalışmak için gerçek veri moduna geç.</p><a class="btn" href="#ayarlar">Gerçek veri moduna geç</a></div><p style="margin:10px 0 0;display:flex;flex-wrap:wrap;gap:0 18px"><a class="back" href="#kalitim">Soy ağacı ve kalıtım</a><a class="back" href="#gunluk">Günlük giriş</a><a class="back" href="#gorevler">Görev merkezi</a><a class="back" href="#stok">Stok</a><a class="back" href="#kpi">KPI raporu</a></p><div class="tiles">'+
+ ["r","o","y","g"].map(function(k){return'<button class="tile '+k+'" data-f="'+k+'" aria-pressed="'+(filt===k)+'"><b>'+cnt[k]+'</b><span>'+CL[k][0]+'</span></button>'}).join("")+'</div>'+
+ '<input type="search" id="q" placeholder="İnek numarası ara" value="'+q+'" aria-label="İnek numarası ara">'+(list.map(rowHtml).join("")||'<p class="note">Bu filtrede hayvan yok. Filtreyi kaldırmak için kutuya yeniden dokun.</p>')+(filt?"":regHtml());
+ app.querySelectorAll(".tile").forEach(function(b){b.onclick=function(){filt=filt===b.dataset.f?"":b.dataset.f;viewSuru()}});
+ var qi=document.getElementById("q");qi.oninput=function(){q=qi.value.trim();var pos=qi.selectionStart;viewSuru();var n=document.getElementById("q");n.focus();n.setSelectionRange(pos,pos)}}
+function viewInek(id){var c=cows.filter(function(x){return x.id==id})[0];if(!c){location.hash="#suru";return}
+ var circ=2*Math.PI*42,off=circ*(1-c.score/100);
+ var h='<a class="back" href="#suru">Sürüye dön</a><div class="card '+c.cls+'"><div class="hero"><div class="ring"><svg width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="var(--soft)" stroke-width="9"/><circle cx="48" cy="48" r="42" fill="none" stroke="var(--c)" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+circ.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 48 48)"/></svg><b>'+c.score+'</b></div><div><h1>İnek '+c.id+'</h1><div class="sub">Laktasyon '+c.lak+', '+c.dim+'. gün, bugün '+c.today.sut.toFixed(1)+' kg süt</div><div style="margin-top:8px"><span class="chip w">'+CL[c.cls][0]+': '+CL[c.cls][1]+'</span>'+(c.fresh?'<span class="chip">Geçiş dönemi ×'+cfg.fm+'</span>':"")+'</div></div></div></div>';
+ h+='<h2>Olası klinik tablo</h2>'+(c.al.length?c.al.map(function(r){var s=SEV[r.s];return'<div class="al '+s[1]+'"><b>'+r.n+'</b> <span class="chip w '+s[1]+'">'+s[0]+'</span><p>'+r.a+'</p><p class="note" style="margin:6px 0 0">Neden verildi: '+r.w(c)+'</p><p style="margin:6px 0 0">'+fbBtn(c,r)+'</p></div>'}).join("")+'<p class="note">Bunlar kural tabanlı ön uyarılardır; tanı ve tedavi kararı hekime aittir.</p>':'<p class="note">Kayda değer sapma yok. Hayvan kendi 14 günlük baz çizgisinin içinde.</p>');
+ h+='<h2>Puan kesintisi</h2><div class="card">'+Object.keys(GR).map(function(g){var x=c.gs[g];return'<div class="grp"><div><span>'+GR[g]+'</span><span>−'+x.d.toFixed(1)+' / '+x.w.toFixed(0)+'</span></div><div class="bar" style="--c:'+(x.f>.6?"var(--r)":x.f>.25?"var(--o)":x.f>0?"var(--y)":"var(--g)")+'"><i style="width:'+(x.w?x.d/x.w*100:0).toFixed(0)+'%"></i></div></div>'}).join("")+'</div>';
+ h+='<h2>Bugün ve kendi baz çizgisi</h2><div class="card tw"><table><tr><th>Ölçüm</th><th>Bugün</th><th>14 gün ort.</th><th>Sapma</th><th>Seyir</th></tr>'+M.map(function(m){var f=frac(m,c),r=dv(c,m.k),cl=f>.6?"r":f>0?"o":"g";
+  return'<tr class="'+cl+'"><td>'+m.l+'</td><td>'+fmt(m,c.today[m.k])+'</td><td>'+fmt(m,c.base[m.k])+'</td><td class="dev">'+(m.abs?(r>=0?"+":"")+r.toFixed(1)+" °C":(r>=0?"+":"")+(r*100).toFixed(0)+"%")+'</td><td>'+spark(m,c)+'</td></tr>'}).join("")+'</table></div>';
+ h+=evBlock(String(c.id),true);h+=pedBlock(String(c.id));h+=cowFin(c);h+='<p style="margin-top:14px"><button class="p" id="rv">Revire ayır</button> <button id="nt">Not ekle</button></p><p class="note">Revire ayırma kayıt ve kontrol görevi oluşturur; kapı bağlantısı sensör aşamasında eklenecek.</p>';
+ app.innerHTML=h;document.getElementById("rv").onclick=function(){addEv(String(c.id),"revir",TODAY,{not:"Revire ayrıldı"});fin.tasks.push({id:uid(),cow:String(c.id),t:"Revir kontrolü",due:TODAY,pri:"Yüksek",who:"",rep:0,status:"Açık"});save();viewInek(c.id);updBadge();toast("Revir kaydı ve kontrol görevi oluşturuldu")};document.getElementById("nt").onclick=function(){var s=document.getElementById("evt");s.value="not";s.onchange();s.scrollIntoView({block:"center"});document.getElementById("ef_not").focus()};app.querySelectorAll("[data-fb]").forEach(function(b){b.onclick=function(){var q=b.dataset.fb.split("|");fin.fb[q[0]]=q[1];save();viewInek(c.id);toast("Geri bildirim kaydedildi")}});bindEv(String(c.id),true,function(){viewInek(c.id)})}
+function viewAlarm(){var a=[];cows.forEach(function(c){c.al.forEach(function(r){a.push({c:c,r:r})})});a.sort(function(x,y){return y.r.s-x.r.s||x.c.score-y.c.score});
+ app.innerHTML='<h1>Alarmlar</h1><div class="sub">'+a.length+' aktif uyarı, önem sırasıyla</div><div style="margin-top:14px">'+(a.map(function(x){var s=SEV[x.r.s];return'<a class="al '+s[1]+'" href="#inek-'+x.c.id+'"><b>İnek '+x.c.id+': '+x.r.n+'</b> <span class="chip w '+s[1]+'">'+s[0]+'</span><p>'+x.r.a+'</p></a>'}).join("")||'<p class="note">Aktif alarm yok.</p>')+'</div>'}
+function viewSet(){var h='<h1>Puanlama ayarları</h1><div class="sub">Her inek günü 100 puanla başlar. Ölçümler kendi 14 günlük ortalamasından saptıkça ilgili gruptan puan kırılır.</div><div class="card set" style="margin-top:14px">';
+ Object.keys(GR).forEach(function(g){h+='<label for="w'+g+'"><span>'+GR[g]+'</span><b id="v'+g+'"></b></label><input type="range" id="w'+g+'" min="0" max="50" value="'+cfg.w[g]+'">'});
+ h+='<label for="fm"><span>Geçiş dönemi hassasiyeti (doğum çevresi 21 gün)</span><b id="vfm"></b></label><input type="range" id="fm" min="1" max="2" step="0.1" value="'+cfg.fm+'"><p class="note">Ağırlıklar toplamı 100’e otomatik oranlanır. Triyaj: 90 ve üzeri yeşil, 75–89 sarı, 60–74 turuncu, altı kırmızı. İki ayrı grupta belirgin sapma varsa puan en fazla 74 olur.</p><button id="rs">Varsayılana dön</button></div>'+modeCard()+backupCard();
+ app.innerHTML=h;
+ function upd(){var sw=0,g;for(g in cfg.w)sw+=cfg.w[g];sw=sw||1;for(g in GR)document.getElementById("v"+g).textContent=Math.round(cfg.w[g]/sw*100)+" puan";document.getElementById("vfm").textContent="×"+cfg.fm.toFixed(1);recalc()}
+ Object.keys(GR).forEach(function(g){document.getElementById("w"+g).oninput=function(e){cfg.w[g]=+e.target.value;upd()}});
+ document.getElementById("fm").oninput=function(e){cfg.fm=+e.target.value;upd()};
+ document.getElementById("rs").onclick=function(){cfg.w={R:30,S:25,A:20,I:15,Y:10};cfg.fm=1.5;recalc();viewSet()};bindBackup();bindMode();upd()}
+function route(){ensureFin();applyMode();var h=location.hash.slice(1)||"suru",key=h.split("-")[0];
+ document.querySelectorAll("nav a").forEach(function(a){var on=a.getAttribute("href")==="#"+(/^(inek|hayvan|hayvanlar|hayvanduzenle|soy|kalitim|gorevler|stok|kpi|gunluk)$/.test(key)?"suru":key);if(on)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
+ if(key==="inek")viewInek(h.split("-")[1]);else if(key==="alarmlar")viewAlarm();else if(key==="ayarlar")viewSet();else if(key==="maliyet")viewMal();else if(key==="receteler")viewRx();else if(key==="hayvanlar")viewAn();else if(key==="hayvan")viewHv(h.split("-")[1]);else if(key==="hayvanduzenle")viewAn(h.split("-")[1]);else if(key==="soy"){var kk=fromSid(h.split("-")[1]);if(kk)viewSoy(kk);else location.hash="#suru"}else if(key==="kalitim")viewKal();else if(key==="gorevler")viewGor();else if(key==="stok")viewStok();else if(key==="kpi")viewKpi();else if(key==="gunluk")viewGun();else viewSuru();window.scrollTo(0,0)}
+var fin={price:18,feed:140,kur:49.8,entries:[],rx:[],animals:[]};
+try{var sv=JSON.parse(localStorage.getItem("sc-v1"));if(sv)fin=Object.assign(fin,sv)}catch(e){}
+function save(){try{localStorage.setItem("sc-v1",JSON.stringify(fin))}catch(e){}}
+function iso(d){return new Date(d.getTime()-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)}
+function addD(s,n){var d=new Date(s+"T12:00:00");d.setDate(d.getDate()+n);return iso(d)}
+var TODAY=iso(new Date()),TN={yem:"Yem",ilac:"İlaç",vet:"Veteriner",dg:"Diğer"},rxF="";
+function money(v){return Math.round(v).toLocaleString("tr-TR")+" TL"}
+function uid(){return Date.now().toString(36)+Math.floor(Math.random()*1e4)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function num(id){return parseFloat(document.getElementById(id).value)}
+function val(id){return document.getElementById(id).value}
+function cowOpts(all,sel){return(all?'<option value="all">Tüm sürü</option>':"")+cows.map(function(c){return'<option value="'+c.id+'"'+(sel==c.id?" selected":"")+'>İnek '+c.id+'</option>'}).join("")+fin.animals.map(function(a){return'<option value="'+esc(a.kupe)+'"'+(sel==a.kupe?" selected":"")+'>'+esc(a.kupe)+' (kayıtlı)</option>'}).join("")}
+function finCalc(c){var from=addD(TODAY,-13),n=nHerd()||1,milk=c.hist.sut.reduce(function(a,b){return a+b},0),f={milk:milk,rev:milk*fin.price,feed:fin.feed*14,drug:0,vet:0,oth:0};
+ fin.entries.forEach(function(e){if(e.d<from||e.d>TODAY)return;var v=e.cow==="all"?e.amt/n:e.cow==c.id?e.amt:0;if(e.t==="ilac")f.drug+=v;else if(e.t==="vet")f.vet+=v;else if(e.t==="yem")f.feed+=v;else f.oth+=v});
+ fin.rx.forEach(function(r){if(r.cow==c.id&&r.start>=from&&r.start<=TODAY)f.drug+=r.cost||0});
+ f.cost=f.feed+f.drug+f.vet+f.oth;f.net=f.rev-f.cost;return f}
+function rxEnd(r){return addD(r.start,(+r.days||0)+(+r.wd||0))}
+function wdLeft(r){var e=rxEnd(r);return e>TODAY?Math.round((new Date(e+"T12:00:00")-new Date(TODAY+"T12:00:00"))/864e5):0}
+function inWd(id){return fin.rx.filter(function(r){return r.cow==id&&+r.wd>0&&wdLeft(r)>0})}
+function rxHtml(r,sc){var l=wdLeft(r),w=+r.wd>0;return'<div class="al '+(l>0?"r":"g")+'"><button class="x" data-rx="'+r.id+'">Sil</button><b>'+esc(r.drug)+'</b> <span class="chip w '+(l>0?"r":"g")+'">'+(l>0?"Arınmada, "+l+" gün kaldı":w?"Arınma bitti":"Arınma yok")+'</span><p>'+(sc?"İnek "+r.cow+", ":"")+(r.dose?esc(r.dose)+", ":"")+r.start+" başlangıç, "+(r.days||0)+" gün tedavi"+(w?", süt arınma "+r.wd+" gün (tanka giriş "+rxEnd(r)+")":"")+(+r.mw>0?", et arınma "+r.mw+" gün (kesim "+addD(r.start,(+r.days||0)+(+r.mw))+" tarihinden sonra)":"")+(r.src?". Kaynak: "+esc(r.src)+(r.ok?" (onaylı)":" (onay bekliyor)"):"")+(r.vet?". "+esc(r.vet):"")+(r.dx?". Tanı: "+esc(r.dx):"")+(r.cost?". Maliyet: "+money(r.cost):"")+'</p></div>'}
+function cowFin(c){var f=finCalc(c),rx=fin.rx.filter(function(r){return r.cow==c.id}).sort(function(a,b){return a.start<b.start?1:-1}).slice(0,5);
+ return'<h2>Kar ve zarar (son 14 gün)</h2><div class="card '+(f.net>=0?"g":"r")+'"><b style="font-size:24px;color:var(--c)">'+(f.net>=0?"+":"−")+money(Math.abs(f.net))+'</b><div class="sub">Süt geliri '+money(f.rev)+' ('+f.milk.toFixed(0)+' L), gider '+money(f.cost)+' (yem '+money(f.feed)+', ilaç '+money(f.drug)+', veteriner '+money(f.vet)+')</div></div><h2>Reçeteler</h2>'+(rx.length?rx.map(function(r){return rxHtml(r,false)}).join(""):'<p class="note">Bu hayvan için kayıtlı reçete yok.</p>')+'<p><a class="back" href="#receteler">Reçete ekle veya tümünü gör</a></p>'}
+function viewMal(){var T={rev:0,feed:0,drug:0,vet:0,oth:0,net:0},L=(REAL()?activeA().map(rcow):cows).map(function(c){var f=finCalc(c);for(var k in T)T[k]+=f[k];return{c:c,f:f}}).sort(function(a,b){return a.f.net-b.f.net});var am=0,ac=0;fin.animals.forEach(function(a){var x=aFin(a);am+=x.am;ac+=REAL()?0:x.drug+x.ent});T.net-=am+ac;
+ var h='<h1>Maliyet ve kar/zarar</h1><div class="sub">'+(REAL()?'Süt miktarı Günlük giriş sayfasından gelir; girilmeyen günler gelire eklenmez ('+milkDays()+' / 14 gün için veri var). Fiyatı ve giderleri sen girersin. Dönem: son 14 gün.':'Süt miktarı sistemden gelir; fiyatı ve giderleri sen girersin. Dönem: son 14 gün.')+'</div><div class="card" style="margin-top:14px"><div class="frm"><div><label for="pr">Süt satış fiyatı (TL/L)</label><input type="number" step="any" id="pr" value="'+fin.price+'"></div><div><label for="fd">Günlük yem gideri (TL/inek)</label><input type="number" step="any" id="fd" value="'+fin.feed+'"></div></div></div>';
+ h+='<div class="card '+(T.net>=0?"g":"r")+'" style="margin-top:10px"><b style="font-size:26px;color:var(--c)">'+(T.net>=0?"+":"−")+money(Math.abs(T.net))+'</b><div class="sub">Sürü net sonucu, inek başı '+money(T.net/(L.length||1))+'</div>'+[["Süt geliri",T.rev],["Yem",T.feed],["İlaç",T.drug],["Veteriner",T.vet],["Diğer",T.oth],["Amortisman (kayıtlı hayvanlar)",am],["Kayıtlı hayvan ilaç ve giderleri",ac]].map(function(x){return'<div class="kv"><span>'+x[0]+'</span><b>'+money(x[1])+'</b></div>'}).join("")+'</div>';
+ h+='<h2>Hayvan bazında (zarar edenler üstte)</h2>'+L.map(function(x){var p=x.f.net>=0;return'<a class="row '+(p?"g":"r")+'" href="'+(x.c.aid?"#hayvan-"+x.c.aid:"#inek-"+x.c.id)+'"><div class="mid"><b>'+esc(x.c.aid?x.c.id:"İnek "+x.c.id)+'</b><span>Gelir '+money(x.f.rev)+', gider '+money(x.f.cost)+'</span></div><div class="sc" style="font-size:16px;min-width:90px">'+(p?"+":"−")+money(Math.abs(x.f.net))+'</div></a>'}).join("");
+ h+=invCard();h+='<h2>Gider ekle</h2><div class="card"><div class="frm"><div><label for="et">Tür</label><select id="et">'+Object.keys(TN).map(function(k){return'<option value="'+k+'">'+TN[k]+'</option>'}).join("")+'</select></div><div><label for="ec">Hayvan</label><select id="ec">'+cowOpts(true)+'</select></div><div><label for="ea">Tutar (TL)</label><input type="number" step="any" id="ea"></div><div><label for="ed">Tarih</label><input type="date" id="ed" value="'+TODAY+'"></div><div class="full"><label for="en">Not</label><input type="text" id="en"></div><div class="full"><button class="p" id="ad">Gideri kaydet</button></div></div><p class="note">“Tüm sürü” seçilirse tutar hayvanlara eşit bölünür. Reçetelerdeki ilaç maliyeti otomatik eklenir, aynı ilacı buraya tekrar girme. Kayıtlar bu cihazın tarayıcısında saklanır.</p></div>';
+ var E=fin.entries.slice().sort(function(a,b){return a.d<b.d?1:-1});
+ h+='<h2>Girilen giderler</h2>'+(E.map(function(e){return'<div class="al g"><button class="x" data-en="'+e.id+'">Sil</button><b>'+TN[e.t]+': '+money(e.amt)+'</b><p>'+(e.cow==="all"?"Tüm sürü":"İnek "+e.cow)+", "+e.d+(e.n?". "+esc(e.n):"")+'</p></div>'}).join("")||'<p class="note">Henüz gider girilmedi. Yem için günlük değeri yukarıdan ayarla, diğerlerini buradan ekle.</p>');
+ app.innerHTML=h;
+ document.getElementById("pr").onchange=function(){var v=num("pr");if(v>=0){fin.price=v;save();viewMal()}};
+ document.getElementById("fd").onchange=function(){var v=num("fd");if(v>=0){fin.feed=v;save();viewMal()}};
+ document.getElementById("ad").onclick=function(){var a=num("ea");if(!(a>0)){toast("Tutarı gir");return}fin.entries.push({id:uid(),t:val("et"),cow:val("ec"),amt:a,d:val("ed")||TODAY,n:val("en")});save();viewMal();toast("Gider kaydedildi")};
+ app.querySelectorAll("[data-en]").forEach(function(b){b.onclick=function(){fin.entries=fin.entries.filter(function(e){return e.id!==b.dataset.en});save();viewMal()}})}
+function viewRx(){var list=fin.rx.filter(function(r){return!rxF||r.cow==rxF}).sort(function(a,b){return a.start<b.start?1:-1}),act=new Set(fin.rx.filter(function(r){return +r.wd>0&&wdLeft(r)>0}).map(function(r){return r.cow})).size;
+ var h='<h1>Reçeteler</h1><div class="sub">'+fin.rx.length+' kayıt, '+act+' hayvanın sütü arınmada</div><div class="card" style="margin-top:14px"><div class="frm"><div><label for="rc">Hayvan</label><select id="rc">'+cowOpts(false)+'</select></div><div><label for="rd">İlaç adı</label><input type="text" id="rd"></div><div><label for="rz">Doz ve yol</label><input type="text" id="rz"></div><div><label for="rs">Başlangıç</label><input type="date" id="rs" value="'+TODAY+'"></div><div><label for="rn">Tedavi süresi (gün)</label><input type="number" id="rn" value="3"></div><div><label for="rw">Süt arınma (gün)</label><input type="number" id="rw" value="0"></div><div><label for="rw2">Et arınma (gün)</label><input type="number" id="rw2" value="0"></div><div><label for="rsrc">Arınma kaynağı</label><input type="text" id="rsrc" placeholder="etiket, mevzuat"></div><div><label for="rvt">Veteriner / uygulayan</label><input type="text" id="rvt"></div><div class="full"><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="rok" style="width:auto"> Arınma süresini etiketten kontrol ettim</label></div><div><label for="rt">Tanı</label><input type="text" id="rt"></div><div><label for="rm">Maliyet (TL)</label><input type="number" step="any" id="rm"></div><div class="full"><button class="p" id="ra">Reçeteyi kaydet</button></div></div><p class="note">Arınma süresini ilaç etiketinden kontrol ederek gir. Arınmadaki ineğin sütü sürü listesinde işaretlenir.</p></div>';
+ h+='<h2>Kayıtlar</h2><select id="rf" aria-label="Hayvana göre filtrele"><option value="">Tüm hayvanlar</option>'+cowOpts(false,rxF)+'</select><div style="margin-top:10px">'+(list.map(function(r){return rxHtml(r,true)}).join("")||'<p class="note">Kayıt yok. Yukarıdan ilk reçeteyi ekle.</p>')+'</div>';
+ app.innerHTML=h;
+ document.getElementById("rf").onchange=function(){rxF=val("rf");viewRx()};
+ document.getElementById("ra").onclick=function(){var d=val("rd").trim();if(!d){toast("İlaç adını gir");return}fin.rx.push({id:uid(),cow:val("rc"),drug:d,dose:val("rz").trim(),start:val("rs")||TODAY,days:num("rn")||0,wd:num("rw")||0,mw:num("rw2")||0,src:val("rsrc").trim(),vet:val("rvt").trim(),ok:document.getElementById("rok").checked,dx:val("rt").trim(),cost:num("rm")||0});save();viewRx();toast("Reçete kaydedildi")};
+ app.querySelectorAll("[data-rx]").forEach(function(b){b.onclick=function(){fin.rx=fin.rx.filter(function(r){return r.id!==b.dataset.rx});save();viewRx()}})}
+var BR=["Holstein","Simental","Montofon","Jersey","Esmer","Yerli melez","Diğer"],ST=["Sağmal inek","Gebe düve","Düve","Kuru inek","Buzağı","Tosun"];
+function so(a,s){return a.map(function(x){return'<option'+(x===s?" selected":"")+'>'+x+'</option>'}).join("")}
+function ageStr(d){if(!d)return"yaş girilmedi";var a=new Date(d+"T12:00:00"),b=new Date(TODAY+"T12:00:00"),m=Math.max(0,(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth()-(b.getDate()<a.getDate()?1:0));return(m>=12?Math.floor(m/12)+" yıl ":"")+((m%12||m<12)?m%12+" ay":"")}
+function usd(v){return"$"+(+v).toLocaleString("en-US",{maximumFractionDigits:2})}
+function invCard(){var A=fin.animals,tl=0,u=0;A.forEach(function(a){tl+=a.tl||0;u+=a.usd||0});
+ return'<h2>Satın alma yatırımı</h2><div class="card">'+(A.length?'<div class="kv"><span>'+A.length+' hayvan, toplam alış</span><b>'+money(tl)+'</b></div><div class="kv"><span>Dolar karşılığı</span><b>'+usd(u)+'</b></div><div class="kv"><span>Dolar toplamının güncel kurla değeri</span><b>'+money(u*fin.kur)+'</b></div><p class="note">Bu tutar beklenen verim ömrüne bölünüp günlük amortisman olarak kar ve zarara yansır.</p>':'<p class="note">Kayıtlı hayvan yok. Alış fiyatlarını Hayvan sayfasında girince burada toplanır.</p>')+'<a class="back" href="#hayvanlar">Hayvan ekle veya listeyi gör</a></div>'}
+var VAC=["Şap aşısı","İç parazit","Dış parazit","Diğer"],GEST=283;
+function dd(a,b){return Math.round((new Date(a+"T12:00:00")-new Date(b+"T12:00:00"))/864e5)}
+function byId(id){return fin.animals.filter(function(a){return a.id===id})[0]}
+function ageM(d){var a=new Date(d+"T12:00:00"),b=new Date(TODAY+"T12:00:00");return Math.max(0,(b.getFullYear()-a.getFullYear())*12+b.getMonth()-a.getMonth()-(b.getDate()<a.getDate()?1:0))}
+function amortDay(a){var y=+a.omur>0?+a.omur:4;return Math.max(0,(a.tl||0)-(+a.hurda||0))/(y*365)}
+function aFin(a){var from=addD(TODAY,-13),s=a.gelis>from?a.gelis:from,days=Math.max(0,dd(TODAY,s)+1),am=amortDay(a)*days,drug=0,ent=0;
+ fin.rx.forEach(function(r){if(r.cow==a.kupe&&r.start>=from&&r.start<=TODAY)drug+=r.cost||0});
+ fin.entries.forEach(function(e){if(e.cow==a.kupe&&e.d>=from&&e.d<=TODAY)ent+=e.amt});
+ return{days:days,am:am,drug:drug,ent:ent,cost:am+drug+ent}}
+function rem(a){var o=[];
+ if(a.tohum){var dg=addD(a.tohum,GEST);if(!a.gebe)o.push({t:"Gebelik kontrolü",d:addD(a.tohum,35)});else{o.push({t:"Kuruya çıkarma",d:addD(dg,-60)});o.push({t:"Beklenen doğum",d:dg})}}
+ (a.vac||[]).forEach(function(v){o.push({t:v.ad+" tekrarı",d:addD(v.son,+v.ar||0)})});
+ o.forEach(function(x){x.left=dd(x.d,TODAY);x.cls=x.left<0?"r":x.left<=7?"o":x.left<=14?"y":"g"});
+ return o.sort(function(x,y){return x.d<y.d?-1:1})}
+function remTxt(x){return x.left<0?Math.abs(x.left)+" gün gecikti":x.left===0?"bugün":x.left+" gün kaldı"}
+function rowAn(a){var u=rem(a).filter(function(x){return x.left<=14}).length;return'<a class="row g" href="#hayvan-'+a.id+'"><div class="mid"><b>'+esc(a.kupe)+(a.demo?' <span class="chip">DEMO</span>':'')+'</b><span>'+esc(a.cins)+', '+esc(a.durum)+', '+ageStr(a.dogum)+(u?', '+u+' yaklaşan iş':'')+'</span>'+(inWd(a.kupe).length?'<br><span class="chip w r">Süt arınmada</span>':'')+'</div><div class="sc" style="font-size:12px;font-weight:400;color:var(--mut)">sensör yok</div></a>'}
+function regHtml(){if(!fin.animals.length)return"";var A=fin.animals.filter(function(a){return!q||a.kupe.indexOf(q)>-1}),up=[];
+ fin.animals.forEach(function(a){rem(a).forEach(function(x){if(x.left<=14)up.push({a:a,x:x})})});up.sort(function(p,r){return p.x.d<r.x.d?-1:1});
+ return(up.length?'<h2>Yaklaşan işler</h2>'+up.map(function(u){return'<a class="al '+u.x.cls+'" href="#hayvan-'+u.a.id+'"><b>'+esc(u.a.kupe)+': '+u.x.t+'</b><p>'+u.x.d+', '+remTxt(u.x)+'</p></a>'}).join(""):"")+'<h2>Kayıtlı hayvanlar</h2>'+(A.map(rowAn).join("")||'<p class="note">Aramaya uyan kayıtlı hayvan yok.</p>')}
+function viewAn(eid){var a=eid?byId(eid):null;if(eid&&!a){location.hash="#hayvanlar";return}
+ var $=function(i){return document.getElementById(i)},g=function(k,d){return a&&a[k]!==undefined&&a[k]!==""?a[k]:d},m=a&&a.dogum?ageM(a.dogum):0;
+ var h=a?'<a class="back" href="#hayvan-'+a.id+'">Vazgeç</a><h1>Hayvanı düzenle</h1>':'<a class="back" href="#suru">Sürüye dön</a><h1>Hayvan ekle</h1><div class="sub">'+fin.animals.length+' kayıtlı hayvan. Reçete ve gider formlarında seçilebilir.</div>';
+ h+='<div class="card" style="margin-top:14px"><div class="frm"><div class="full"><label for="gk">Güncel dolar kuru (TL)</label><input type="number" step="any" id="gk" value="'+fin.kur+'"></div></div></div>';
+ h+='<h2>'+(a?"Bilgiler":"Yeni hayvan")+'</h2><div class="card"><div class="frm"><div class="full"><label for="ak">Küpe numarası</label><input type="text" id="ak" value="'+esc(g("kupe",""))+'"></div><div><label for="ac">Cins (ırk)</label><select id="ac">'+so(BR,g("cins","Holstein"))+'</select></div><div><label for="ag">Cinsiyet</label><select id="ag">'+so(["Dişi","Erkek"],g("cinsiyet","Dişi"))+'</select></div><div><label for="ay">Yaş (yıl)</label><input type="number" id="ay" min="0" value="'+(a&&a.dogum?Math.floor(m/12):"")+'"></div><div><label for="am">Yaş (ay)</label><input type="number" id="am" min="0" max="11" value="'+(a&&a.dogum?m%12:"")+'"></div><div><label for="ad2">Durum</label><select id="ad2">'+so(ST,g("durum","Sağmal inek"))+'</select></div><div><label for="al">Çiftliğe geliş tarihi</label><input type="date" id="al" value="'+g("gelis",TODAY)+'"></div><div><label for="at">Alış fiyatı (TL)</label><input type="number" step="any" id="at" value="'+g("tl","")+'"></div><div><label for="au">Alış fiyatı (USD)</label><input type="number" step="any" id="au" value="'+g("usd","")+'"></div><div class="full"><label for="ar">Alış günündeki kur (TL/USD)</label><input type="number" step="any" id="ar" value="'+g("kur",fin.kur)+'"></div><div><label for="ao">Beklenen verim ömrü (yıl)</label><input type="number" step="any" id="ao" value="'+g("omur",4)+'"></div><div><label for="ah">Çıkış değeri (TL)</label><input type="number" step="any" id="ah" value="'+g("hurda",0)+'"></div><div><label for="an">Anne (küpe no)</label><input type="text" id="an" value="'+esc(g("anne",""))+'"></div><div><label for="bb">Baba (boğa kodu veya adı)</label><input type="text" id="bb" list="sl" value="'+esc(g("baba",""))+'"></div><div class="full"><label for="as">Nereden alındı (isteğe bağlı)</label><input type="text" id="as" value="'+esc(g("kaynak",""))+'"></div><div class="full"><button class="p" id="ab">'+(a?"Değişiklikleri kaydet":"Hayvanı kaydet")+'</button></div></div><p class="note">TL, dolar ve kurdan ikisini girince üçüncüsü hesaplanır. Günlük amortisman: (alış fiyatı eksi çıkış değeri) bölü (ömür x 365).</p></div>'+sireList();
+ if(!a)h+='<h2>Kayıtlı hayvanlar</h2>'+(fin.animals.map(rowAn).join("")||'<p class="note">Henüz hayvan eklenmedi.</p>');
+ app.innerHTML=h;
+ $("gk").onchange=function(){var v=num("gk");if(v>0){fin.kur=v;save();toast("Kur güncellendi")}};
+ $("at").oninput=function(){var k=num("ar"),t=num("at");if(k>0&&t>=0)$("au").value=(t/k).toFixed(2)};
+ $("au").oninput=function(){var k=num("ar"),u=num("au");if(k>0&&u>=0)$("at").value=(u*k).toFixed(0)};
+ $("ar").oninput=function(){var k=num("ar"),u=num("au"),t=num("at");if(k>0){if(u>0)$("at").value=(u*k).toFixed(0);else if(t>0)$("au").value=(t/k).toFixed(2)}};
+ $("ab").onclick=function(){var k=val("ak").trim();if(!k){toast("Küpe numarasını gir");return}
+  if(fin.animals.some(function(x){return x.kupe===k&&(!a||x.id!==a.id)})){toast("Bu küpe numarası zaten kayıtlı");return}
+  var mm=(num("ay")||0)*12+(num("am")||0),o={kupe:k,cins:val("ac"),cinsiyet:val("ag"),durum:val("ad2"),dogum:mm>0?addD(TODAY,-Math.round(mm*30.44)):"",gelis:val("al")||TODAY,tl:num("at")||0,usd:num("au")||0,kur:num("ar")||fin.kur,kaynak:val("as").trim(),omur:num("ao")||4,hurda:num("ah")||0,anne:val("an").trim(),baba:val("bb").trim()};
+  if(a){var old=a.kupe;Object.assign(a,o);if(old!==k){fin.rx.forEach(function(r){if(r.cow==old)r.cow=k});fin.entries.forEach(function(e){if(e.cow==old)e.cow=k})}save();location.hash="#hayvan-"+a.id;toast("Değişiklikler kaydedildi")}
+  else{o.id=uid();fin.animals.push(o);save();viewAn();toast("Hayvan kaydedildi")}}}
+function viewHv(id){var a=byId(id);if(!a){location.hash="#suru";return}
+ var f=aFin(a),R=rem(a),$=function(i){return document.getElementById(i)},gd=a.tohum?addD(a.tohum,GEST):"",
+ rx=fin.rx.filter(function(r){return r.cow==a.kupe}).sort(function(x,y){return x.start<y.start?1:-1});
+ var h='<a class="back" href="#suru">Sürüye dön</a><div class="hd"><div><h1>'+esc(a.kupe)+'</h1><div class="sub">'+esc(a.cins)+', '+esc(a.cinsiyet)+', '+esc(a.durum)+'. Yaş: '+ageStr(a.dogum)+'. Geliş: '+a.gelis+(a.kaynak?'. '+esc(a.kaynak):'')+'</div></div><a class="btn" href="#hayvanduzenle-'+a.id+'">Düzenle</a></div>';
+ if((a.status||"Aktif")!=="Aktif")h+='<div class="al r" style="margin-top:12px"><b>Durum: '+esc(a.status)+'</b><p>'+esc(a.statusDate||"")+(a.statusWhy?", "+esc(a.statusWhy):"")+'</p></div>';if(inWd(a.kupe).length)h+='<div class="al r" style="margin-top:12px"><b>Süt arınmada</b><p>Bu hayvanın sütü tanka girmemeli. Ayrıntı reçetelerde.</p></div>';
+ h+='<h2>Yaklaşan işler</h2>'+(R.length?R.map(function(x){return'<div class="al '+x.cls+'"><b>'+x.t+'</b><p>'+x.d+', '+remTxt(x)+'</p></div>'}).join(""):'<p class="note">Planlı iş yok. Aşağıdan tohumlama veya aşı ekleyebilirsin.</p>');
+ h+='<h2>Maliyet</h2><div class="card">'+(a.tl||a.usd?'<div class="kv"><span>Alış</span><b>'+money(a.tl)+(a.usd?' ('+usd(a.usd)+')':'')+'</b></div><div class="kv"><span>Günlük amortisman</span><b>'+money(amortDay(a))+'</b></div>':'<p class="note" style="margin-top:0">Alış fiyatı girilmemiş, amortisman hesaplanamıyor.</p>')+'<div class="kv"><span>Son 14 gün gideri</span><b>'+money(f.cost)+'</b></div><div class="kv"><span>Amortisman</span><span>'+money(f.am)+'</span></div><div class="kv"><span>İlaç</span><span>'+money(f.drug)+'</span></div><div class="kv"><span>Diğer giderler</span><span>'+money(f.ent)+'</span></div><p class="note">Süt geliri sensör ve robot verisi bağlanınca eklenecek.</p></div>';
+ h+='<h2>Üreme</h2><div class="card"><div class="frm"><div><label for="th">Tohumlama tarihi</label><input type="date" id="th" value="'+(a.tohum||TODAY)+'"></div><div><label for="tg">Gebelik</label><select id="tg"><option value="0"'+(a.gebe?"":" selected")+'>Teyit edilmedi</option><option value="1"'+(a.gebe?" selected":"")+'>Teyit edildi</option></select></div><div class="full"><label for="tb">Boğa (kod veya ad)</label><input type="text" id="tb" list="sl" value="'+esc(a.boga||"")+'"></div><div class="full"><button class="p" id="ts">Tohumlamayı kaydet</button> '+(a.tohum?'<button id="td">Doğum oldu</button> <button id="tc">Kaydı temizle</button>':'')+'</div><div class="frm full" id="cf" style="display:none"><div><label for="cn">Yavru küpe no (boşsa yavru eklenmez)</label><input type="text" id="cn"></div><div><label for="cs">Yavru cinsiyeti</label><select id="cs"><option>Dişi</option><option>Erkek</option></select></div><div class="full"><button class="p" id="cb">Doğumu kaydet</button></div></div></div>'+sireList()+(a.tohum?'<div class="kv"><span>Gebelik kontrolü (35. gün)</span><span>'+addD(a.tohum,35)+'</span></div><div class="kv"><span>Kuruya çıkarma</span><span>'+addD(gd,-60)+'</span></div><div class="kv"><span>Beklenen doğum</span><b>'+gd+'</b></div>':'')+(a.sonDogum?'<div class="kv"><span>Son doğum</span><span>'+a.sonDogum+'</span></div>':'')+'<p class="note">Tarihler ortalama 283 gün gebelik süresine göre hesaplanır, hekim kararıyla değerlendir.</p></div>';
+ h+='<h2>Aşı ve parazit programı</h2>'+((a.vac||[]).map(function(v){var l=dd(addD(v.son,+v.ar||0),TODAY);return'<div class="al '+(l<0?"r":l<=14?"y":"g")+'"><button class="x" data-vd="'+v.id+'">Sil</button><button class="x" data-vu="'+v.id+'">Uygulandı</button><b>'+esc(v.ad)+'</b><p>Son: '+v.son+', her '+v.ar+' günde bir. Sonraki: '+addD(v.son,+v.ar||0)+', '+remTxt({left:l})+'</p></div>'}).join(""))+'<div class="card"><div class="frm"><div><label for="vn">Tür</label><select id="vn">'+so(VAC)+'</select></div><div><label for="vs">Son yapılma</label><input type="date" id="vs" value="'+TODAY+'"></div><div><label for="va">Tekrar aralığı (gün)</label><input type="number" id="va" value="180"></div><div><label for="vx">Not (ör. ürün adı)</label><input type="text" id="vx"></div><div class="full"><button class="p" id="vb">Programa ekle</button></div></div></div>';
+ h+=milkBlock(a.kupe);h+=evBlock(a.kupe,false);h+=lactForm(a);h+=pedBlock(a.kupe);h+='<h2>Reçeteler</h2>'+(rx.length?rx.map(function(r){return rxHtml(r,false)}).join(""):'<p class="note">Kayıtlı reçete yok.</p>')+'<p><a class="back" href="#receteler">Reçete ekle</a></p><p><button id="dl">Hayvanı sil</button></p>';
+ app.innerHTML=h;
+ function upd(fn){fn();save();viewHv(id)}bindEv(a.kupe,false,function(){viewHv(id)});
+ $("ts").onclick=function(){upd(function(){a.tohum=val("th")||TODAY;a.gebe=val("tg")==="1";a.boga=val("tb").trim();addEv(a.kupe,"tohum",a.tohum,{boga:a.boga});if(a.gebe)addEv(a.kupe,"gebelik",TODAY,{sonuc:"Pozitif",yont:"Kayıt"})})};$("lb").onclick=function(){var m=num("lm");if(!(m>0)){toast("305 gün verimini gir");return}upd(function(){a.l1={m305:m,peak:num("lp")||null,fat:num("lf")||null,prot:num("lq")||null}})};
+ if($("tc"))$("tc").onclick=function(){upd(function(){a.tohum="";a.gebe=false})};
+ if($("td"))$("td").onclick=function(){$("cf").style.display="grid";this.style.display="none"};$("cb").onclick=function(){var cn=val("cn").trim();if(cn&&fin.animals.some(function(x){return x.kupe===cn})){toast("Bu küpe numarası zaten kayıtlı");return}var calf=null;if(cn){calf={id:uid(),kupe:cn,cins:a.cins,cinsiyet:val("cs"),durum:"Buzağı",dogum:TODAY,gelis:TODAY,tl:0,usd:0,kur:fin.kur,kaynak:"Çiftlikte doğdu",omur:4,hurda:0,anne:a.kupe,baba:a.boga||""};fin.animals.push(calf)}addEv(a.kupe,"dogum",TODAY,{yavru:calf?1:undefined});a.sonDogum=TODAY;a.tohum="";a.gebe=false;a.boga="";save();if(calf)location.hash="#soy-"+calf.id;else viewHv(id);toast(calf?"Doğum ve yavru kaydedildi":"Doğum kaydedildi")};
+ $("vb").onclick=function(){var ar=num("va");if(!(ar>0)){toast("Aralığı gün olarak gir");return}var nt=val("vx").trim();upd(function(){(a.vac=a.vac||[]).push({id:uid(),ad:val("vn")+(nt?" ("+nt+")":""),son:val("vs")||TODAY,ar:ar})})};
+ app.querySelectorAll("[data-vd]").forEach(function(b){b.onclick=function(){upd(function(){a.vac=a.vac.filter(function(v){return v.id!==b.dataset.vd})})}});
+ app.querySelectorAll("[data-vu]").forEach(function(b){b.onclick=function(){upd(function(){a.vac.forEach(function(v){if(v.id===b.dataset.vu)v.son=TODAY})})}});
+ app.querySelectorAll("[data-rx]").forEach(function(b){b.onclick=function(){upd(function(){fin.rx=fin.rx.filter(function(r){return r.id!==b.dataset.rx})})}});
+ var armed=false;$("dl").onclick=function(){if(!armed){armed=true;this.textContent="Silmek için tekrar dokun";return}fin.animals=fin.animals.filter(function(x){return x.id!==a.id});save();location.hash="#suru";toast("Hayvan silindi")}}
+function backupCard(){return'<h2>Yedek</h2><div class="card"><p class="note" style="margin-top:0">Kayıtlar yalnızca bu tarayıcıda durur. Aşağıdaki metni kopyalayıp güvenli bir yere (ör. kendine mesaj veya not) kaydet. Gerektiğinde yapıştırarak geri yükleyebilirsin.</p><textarea id="bk" readonly rows="4" aria-label="Yedek metni"></textarea><p><button id="bc">Yedeği kopyala</button></p><label for="bi" style="display:block;font-size:14px">Yedekten yükle (metni yapıştır). Mevcut kayıtların yerine geçer.</label><textarea id="bi" rows="3"></textarea><p><button class="p" id="bl">Yedeği yükle</button></p></div>'}
+function bindBackup(){var t=document.getElementById("bk");t.value=JSON.stringify(fin);
+ document.getElementById("bc").onclick=function(){var done=function(){toast("Yedek kopyalandı")},fail=function(){try{t.select();document.execCommand("copy")?done():toast("Metni seçip elle kopyala")}catch(e){toast("Metni seçip elle kopyala")}};try{navigator.clipboard.writeText(t.value).then(done,fail)}catch(e){fail()}};
+ document.getElementById("bl").onclick=function(){try{var o=JSON.parse(document.getElementById("bi").value);if(!o||!Array.isArray(o.animals)||!Array.isArray(o.entries)||!Array.isArray(o.rx))throw 0;fin=Object.assign({price:18,feed:140,kur:49.8,entries:[],rx:[],animals:[]},o);save();toast("Yedek yüklendi");viewSet()}catch(e){toast("Yedek metni geçersiz")}}}
+var H2=.3,SP=1100,SA=SP*Math.sqrt(H2),SE=SP*Math.sqrt(1-H2),HM=8200;
+function gs(){return Math.sqrt(-2*Math.log(1-rnd()))*Math.cos(2*Math.PI*rnd())}
+var SIRES={A:{ad:"Atlas 5521",bv:450},B:{ad:"Zeus 3340",bv:200},C:{ad:"Titan 7712",bv:-100},D:{ad:"Odin 1189",bv:650}};
+function sireByName(n){for(var k in SIRES)if(SIRES[k].ad===n)return SIRES[k];return null}
+function sireBv(n){var s=sireByName(n);return s?s.bv:null}
+function sireList(){return'<datalist id="sl">'+Object.keys(SIRES).map(function(k){return'<option value="'+SIRES[k].ad+'">'}).join("")+'</datalist>'}
+function mkL(bv,full){var m=Math.round(HM+bv+gs()*SE),o={m305:m,bv:bv};if(!full)return o;
+ var b=.18+rnd()*.08,pd=50+rnd()*25,c=b/pd,S=0,t,y=[];for(t=1;t<=305;t++)S+=Math.pow(t,b)*Math.exp(-c*t);var a=m/S;
+ for(t=1;t<=305;t++)y.push(a*Math.pow(t,b)*Math.exp(-c*t));
+ var wk=[];for(var w=0;w<43;w++){var s=0;for(t=w*7;t<w*7+7;t++)s+=y[t];wk.push(s/7)}
+ o.peak=a*Math.pow(pd,b)*Math.exp(-b);o.pd=Math.round(pd);o.pers=y[199]/o.peak*100;o.curve=wk;
+ o.fat=+(3.9-(m-HM)/12000+gs()*.1).toFixed(2);o.prot=+(3.35-(m-HM)/20000+gs()*.05).toFixed(2);return o}
+var PED={},LACT={},ARCH=[],PAIRS=[[101,108,"A"],[102,110,"B"],[105,114,"D"],[106,116,"C"],[119,120,"A"],[122,123,"B"],[124,126,"D"],[108,127,"C"]];
+[101,102,105,106,119,122,124].forEach(function(id){LACT[id]=mkL(gs()*SA,true);PED[id]={anne:"",baba:""}});
+PAIRS.forEach(function(p){var d=String(p[0]),k=String(p[1]),s=SIRES[p[2]];LACT[k]=mkL(.5*LACT[d].bv+.5*s.bv+gs()*SA*Math.SQRT1_2,true);PED[k]={anne:d,baba:s.ad}});
+for(var ai=0;ai<24;ai++){var as0=SIRES["ABCD"[Math.floor(rnd()*4)]],dm0=mkL(gs()*SA);ARCH.push({dam:dm0,dau:mkL(.5*dm0.bv+.5*as0.bv+gs()*SA*Math.SQRT1_2),sire:as0.ad})}
+(function(){function cw(id){return cows.filter(function(c){return c.id==id})[0]}
+ PAIRS.forEach(function(p){var d=cw(p[0]);if(d&&d.lak<3&&p[0]!==108)d.lak=3+Math.floor(rnd()*2)});
+ PAIRS.forEach(function(p){var k=cw(p[1]);if(k)k.lak=p[1]===108?2:1})})();
+function getA(k){return fin.animals.filter(function(a){return a.kupe===k})[0]}
+function isSim(k){return cows.some(function(c){return String(c.id)===k})}
+function sid(k){if(isSim(k))return k;var a=getA(k);return a?a.id:""}
+function fromSid(x){if(isSim(x))return x;var a=byId(x);return a?a.kupe:""}
+function getL(k){if(LACT[k])return LACT[k];var a=getA(k);return a&&a.l1&&a.l1.m305>0?a.l1:null}
+function getP(k){if(PED[k])return PED[k];var a=getA(k);return a?{anne:a.anne||"",baba:a.baba||""}:{anne:"",baba:""}}
+function label(k){return k?(isSim(k)?"İnek "+k:k):"Bilinmiyor"}
+function href(k){if(!k)return"";if(isSim(k))return"#inek-"+k;var a=getA(k);return a?"#hayvan-"+a.id:""}
+function kids(k){var o=[];Object.keys(PED).forEach(function(x){if(PED[x].anne===k)o.push(x)});fin.animals.forEach(function(a){if(a.anne===k)o.push(a.kupe)});return o}
+function livePairs(){var o=[];if(!REAL())Object.keys(PED).forEach(function(k){if(PED[k].anne)o.push([PED[k].anne,k])});fin.animals.forEach(function(a){if(a.anne)o.push([a.anne,a.kupe])});return o}
+function herdMean(){var a=[];if(!REAL()){Object.keys(LACT).forEach(function(k){a.push(LACT[k].m305)});ARCH.forEach(function(p){a.push(p.dam.m305,p.dau.m305)})}fin.animals.forEach(function(x){if(x.l1&&x.l1.m305>0)a.push(x.l1.m305)});return mean(a)}
+function fd(v){return(v>=0?"+":"−")+Math.round(Math.abs(v)).toLocaleString("tr-TR")}
+function nv(v,d){return v==null||isNaN(v)?"-":(+v).toFixed(d)}
+function cmp(dk,kk){var D=getL(dk),K=getL(kk);if(!D||!K)return null;var mh=herdMean();if(!(mh>0))return null;var dv2=D.m305-mh,kv=K.m305-mh,sb=sireBv(getP(kk).baba),ex=.5*(H2*dv2+(sb==null?0:sb)),r=kv-ex;
+ return{D:D,K:K,mh:mh,dd:dv2,kd:kv,sb:sb,ex:ex,res:r,v:r>1000?["Beklenenin belirgin üstünde","g"]:r<-1000?["Beklenenin belirgin altında","r"]:["Beklenen aralıkta","n"],ratio:Math.abs(dv2)>=500?kv/dv2:null}}
+function regr(){var mh=herdMean(),P=[];livePairs().forEach(function(p){var c=cmp(p[0],p[1]);if(c)P.push([c.dd,c.kd,0])});if(!REAL())ARCH.forEach(function(p){P.push([p.dam.m305-mh,p.dau.m305-mh,1])});
+ var n=P.length,mx=mean(P.map(function(p){return p[0]})),my=mean(P.map(function(p){return p[1]})),sxx=0,sxy=0,syy=0;
+ P.forEach(function(p){sxx+=(p[0]-mx)*(p[0]-mx);sxy+=(p[0]-mx)*(p[1]-my);syy+=(p[1]-my)*(p[1]-my)});
+ var b=sxx?sxy/sxx:0,res=syy-b*sxy;return{P:P,n:n,live:P.filter(function(p){return!p[2]}).length,b:b,h2:2*b,se:n>2&&sxx?2*Math.sqrt(Math.max(0,res/(n-2))/sxx):0,mx:mx,my:my}}
+function scat(R){var W=300,H=230,pd=34,v=R.P.reduce(function(m,p){return Math.max(m,Math.abs(p[0]),Math.abs(p[1]))},2500),X=function(a){return pd+(a+v)/(2*v)*(W-pd-8)},Y=function(a){return H-pd-(a+v)/(2*v)*(H-pd-8)};
+ var s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Anne ve kız verim sapmaları dağılım grafiği"><line x1="'+X(-v)+'" x2="'+X(v)+'" y1="'+Y(0)+'" y2="'+Y(0)+'" stroke="var(--line)"/><line x1="'+X(0)+'" x2="'+X(0)+'" y1="'+Y(-v)+'" y2="'+Y(v)+'" stroke="var(--line)"/>';
+ s+='<line x1="'+X(-v)+'" y1="'+Y(R.my+R.b*(-v-R.mx))+'" x2="'+X(v)+'" y2="'+Y(R.my+R.b*(v-R.mx))+'" stroke="var(--acc)" stroke-width="2"/>';
+ R.P.forEach(function(p){s+='<circle cx="'+X(p[0]).toFixed(1)+'" cy="'+Y(p[1]).toFixed(1)+'" r="'+(p[2]?3:4.5)+'" fill="'+(p[2]?"var(--mut)":"var(--o)")+'" opacity="'+(p[2]?.55:1)+'"/>'});
+ return s+'<text x="'+W/2+'" y="'+(H-8)+'" text-anchor="middle" font-size="10" fill="var(--mut)">Annenin sapması (kg)</text><text x="10" y="'+H/2+'" font-size="10" fill="var(--mut)" transform="rotate(-90 10 '+H/2+')" text-anchor="middle">Kızın sapması (kg)</text></svg>'}
+function curveSvg(D,K){var W=320,H=170,p=30,mx=Math.max.apply(0,D.curve.concat(K.curve))*1.1,X=function(i){return p+i/42*(W-p-8)},Y=function(a){return H-24-a/mx*(H-32)};
+ function pl(c,col,dash){return'<polyline fill="none" stroke="'+col+'" stroke-width="2"'+(dash?' stroke-dasharray="5 4"':'')+' points="'+c.map(function(a,i){return X(i).toFixed(1)+","+Y(a).toFixed(1)}).join(" ")+'"/>'}
+ var g='';[0,.5,1].forEach(function(f){var a=mx/1.1*f;g+='<line x1="'+p+'" x2="'+(W-8)+'" y1="'+Y(a)+'" y2="'+Y(a)+'" stroke="var(--line)"/><text x="2" y="'+(Y(a)+3)+'" font-size="10" fill="var(--mut)">'+Math.round(a)+'</text>'});
+ return'<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Anne ve kızın laktasyon eğrisi">'+g+pl(D.curve,"var(--mut)",1)+pl(K.curve,"var(--acc)")+'<text x="'+p+'" y="'+(H-6)+'" font-size="10" fill="var(--mut)">1. hafta</text><text x="'+(W-8)+'" y="'+(H-6)+'" font-size="10" text-anchor="end" fill="var(--mut)">43. hafta (kg/gün)</text><text x="'+(p+90)+'" y="12" font-size="11" fill="var(--mut)">kesikli: anne</text><text x="'+(p+170)+'" y="12" font-size="11" fill="var(--acc)">düz: kız</text></svg>'}
+function pedSvg(k){var P=getP(k),M=P.anne,MP=M?getP(M):{anne:"",baba:""},bw=100,bh=44;
+ function box(x,y,key,name,role){var l=key?getL(key):null,hr=role==="sire"?"":href(key),sb=role==="sire"?sireBv(name):null,sub=l?Math.round(l.m305)+" kg":sb!=null?"üstünlük "+fd(sb):name&&name!=="Bilinmiyor"?"kayıt yok":"";
+  var s='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="8" fill="var(--card)" stroke="'+(role==="sire"?"var(--o)":"var(--acc)")+'" stroke-width="'+(role==="self"?2.5:1.2)+'"'+(name==="Bilinmiyor"?' stroke-dasharray="4 3" opacity=".6"':'')+'/><text x="'+(x+8)+'" y="'+(y+19)+'" font-size="12" font-weight="600" fill="var(--ink)">'+esc(name.length>14?name.slice(0,13)+"…":name)+'</text><text x="'+(x+8)+'" y="'+(y+35)+'" font-size="10.5" fill="var(--mut)">'+sub+'</text>';
+  return hr?'<a href="'+hr+'">'+s+'</a>':s}
+ var ln='<path fill="none" stroke="var(--line)" stroke-width="1.5" d="M104 125H110V70H116M104 125H110V180H116M216 70H222V36H228M216 70H222V104H228"/>';
+ return'<svg viewBox="0 0 332 215" width="100%" role="img" aria-label="Soy ağacı">'+ln+box(4,103,k,label(k),"self")+box(116,48,M,label(M),"dam")+box(116,158,"",P.baba||"Bilinmiyor","sire")+box(228,14,MP.anne,label(MP.anne),"dam")+box(228,82,"",MP.baba||"Bilinmiyor","sire")+'</svg>'}
+function pedBlock(k){var P=getP(k),c=P.anne?cmp(P.anne,k):null;
+ return'<h2>Soy ağacı</h2><div class="card"><div class="kv"><span>Anne</span><b>'+esc(label(P.anne))+'</b></div><div class="kv"><span>Baba (boğa)</span><b>'+esc(P.baba||"Bilinmiyor")+'</b></div><div class="kv"><span>Kızları ve yavruları</span><b>'+kids(k).length+'</b></div>'+(c?'<span class="chip w '+c.v[1]+'">'+c.v[0]+'</span>':'')+'<p style="margin:10px 0 0"><a class="back" href="#soy-'+sid(k)+'">Soy ağacını ve anne-kız karşılaştırmasını aç</a></p></div>'}
+function lactForm(a){var l=a.l1||{};return'<h2>Laktasyon kaydı (1. laktasyon)</h2><div class="card"><div class="frm"><div><label for="lm">305 gün verimi (kg)</label><input type="number" id="lm" value="'+(l.m305||"")+'"></div><div><label for="lp">Tepe verim (kg/gün)</label><input type="number" step="any" id="lp" value="'+(l.peak||"")+'"></div><div><label for="lf">Süt yağı (%)</label><input type="number" step="any" id="lf" value="'+(l.fat||"")+'"></div><div><label for="lq">Süt proteini (%)</label><input type="number" step="any" id="lq" value="'+(l.prot||"")+'"></div><div class="full"><button class="p" id="lb">Laktasyonu kaydet</button></div></div><p class="note">Anne-kız karşılaştırması bu kayıtla çalışır. Anne ve kız için aynı laktasyon sırasını gir.</p></div>'}
+var DISC='<p class="note" style="margin-top:14px">Tek bir anne-kız çifti kalıtımı kanıtlamaz. Kızın verimi boğadan gelen yarıya, gen eşleşmesindeki şansa ve çevreye (bakım, yem, mevsim) de bağlıdır. Karşılaştırma aynı laktasyon sırasında yapılmalıdır. Resmi damızlık değer için çok sayıda hayvanın verisi ve çevre düzeltmesi gerekir.</p>';
+function cmpHtml(dk,kk,c){var D=c.D,K=c.K;function row(l,a,b,d){return'<tr><td>'+l+'</td><td>'+nv(a,d)+'</td><td>'+nv(b,d)+'</td><td>'+(a==null||b==null?"-":(b-a>=0?"+":"−")+Math.abs(b-a).toFixed(d))+'</td></tr>'}
+ return'<h2>Anne ve kız karşılaştırması</h2><div class="card tw"><table style="min-width:300px"><tr><th>1. laktasyon</th><th>'+esc(label(dk))+'</th><th>'+esc(label(kk))+'</th><th>Fark</th></tr>'+row("305 gün verimi (kg)",D.m305,K.m305,0)+row("Tepe verim (kg/gün)",D.peak,K.peak,1)+row("Tepe günü",D.pd,K.pd,0)+row("Devamlılık (200. gün, % tepe)",D.pers,K.pers,0)+row("Süt yağı (%)",D.fat,K.fat,2)+row("Süt proteini (%)",D.prot,K.prot,2)+'</table></div>'+(D.curve&&K.curve?'<div class="card" style="margin-top:10px">'+curveSvg(D,K)+'</div>':'')+
+ '<h2>Genetik aktarım</h2><div class="card"><span class="chip w '+c.v[1]+'">'+c.v[0]+'</span><div class="kv"><span>Sürü ortalaması (1. laktasyon)</span><span>'+Math.round(c.mh).toLocaleString("tr-TR")+' kg</span></div><div class="kv"><span>Annenin sapması</span><span>'+fd(c.dd)+' kg</span></div><div class="kv"><span>Boğa üstünlüğü</span><span>'+(c.sb==null?"bilinmiyor (0 alındı)":fd(c.sb)+" kg")+'</span></div><div class="kv"><span>Beklenen kız sapması</span><span>'+fd(c.ex)+' kg</span></div><div class="kv"><span>Gerçekleşen kız sapması</span><b>'+fd(c.kd)+' kg</b></div><div class="kv"><span>Beklenenden fark</span><b>'+fd(c.res)+' kg</b></div>'+(c.ratio!=null?'<p class="note">'+(c.ratio<0?'Kız, annenin sapmasının tersi yönde sapma gösterdi.':'Kız, annenin sapmasının yaklaşık yüzde '+Math.round(c.ratio*100)+' kadarını taşıdı.')+'</p>':'<p class="note">Annenin sapması küçük olduğu için oran hesaplanmadı.</p>')+'<p class="note">Beklenen sapma = yarım x (kalıtım derecesi '+H2.toFixed(2).replace(".",",")+' x annenin sapması + boğa üstünlüğü). Fark, kabaca bir standart sapma olan 1.000 kg içindeyse şans ve çevre ile açıklanabilir.</p></div>'}
+function viewSoy(k){var P=getP(k),c=P.anne?cmp(P.anne,k):null,ks=kids(k),h='<a class="back" href="'+(href(k)||"#suru")+'">Geri</a><h1>Soy ağacı: '+esc(label(k))+'</h1><div class="sub">Laktasyon ve soy verileri simülasyondur. Kutulara dokununca o hayvana geçersin.</div><div class="card" style="margin-top:12px">'+pedSvg(k)+'</div>';
+ h+=c?cmpHtml(P.anne,k,c):'<p class="note">Anne ve kızın laktasyon kaydı birlikte olunca karşılaştırma burada çıkar.</p>';
+ if(ks.length)h+='<h2>Kızları ve yavruları</h2>'+ks.map(function(x){var cc=cmp(k,x);return'<a class="al '+(cc?cc.v[1]:"n")+'" href="#soy-'+sid(x)+'"><b>'+esc(label(x))+'</b>'+(cc?' <span class="chip w '+cc.v[1]+'">'+cc.v[0]+'</span><p>305 gün: '+cc.K.m305.toLocaleString("tr-TR")+' kg, anneye göre '+fd(cc.K.m305-cc.D.m305)+' kg. Beklenen sapma '+fd(cc.ex)+', gerçekleşen '+fd(cc.kd)+'.</p>':'<p>Laktasyon kaydı yok.</p>')+'</a>'}).join("");
+ app.innerHTML=h+DISC}
+function viewKal(){var R=regr();if(REAL()&&R.n<6){app.innerHTML='<a class="back" href="#suru">Sürüye dön</a><h1>Kalıtım analizi</h1><p class="note">Veri bulunamadı. Güvenilir bir tahmin için en az 6 anne-kız çiftinin 1. laktasyon verimi gerekir (şu an '+R.n+'). Hayvan kartlarında anne, baba ve laktasyon kaydını gir.</p>';return}var h='<a class="back" href="#suru">Sürüye dön</a><h1>Kalıtım analizi</h1><div class="sub">Anne-kız verim karşılaştırması. Veriler simülasyondur.</div>';
+ h+='<div class="card" style="margin-top:12px"><b style="font-size:26px">h² ≈ '+R.h2.toFixed(2).replace(".",",")+'</b> <span class="note">± '+R.se.toFixed(2).replace(".",",")+'</span><div class="sub">'+R.n+' anne-kız çifti ('+R.live+' sürüdeki, '+(R.n-R.live)+' arşiv). Simülasyonda kullanılan gerçek değer '+H2.toFixed(2).replace(".",",")+'. Süt veriminde literatürde genelde 0,25 ile 0,35 arası kabul edilir.</div>'+scat(R)+'<p class="note">Turuncu noktalar sürüdeki çiftler, gri noktalar arşiv çiftleridir. Çizgi, kızın sapmasının annenin sapmasına regresyonudur; eğimin 2 katı kalıtım derecesi (h²) tahminidir. Çift sayısı azaldıkça tahmin dalgalanır.</p></div>';
+ var L=livePairs().map(function(p){return{p:p,c:cmp(p[0],p[1])}}).filter(function(x){return x.c});
+ h+='<h2>Sürüdeki anne-kız çiftleri</h2>'+(L.length?'<div class="card tw"><table><tr><th>Anne</th><th>Kız</th><th>Anne kg</th><th>Kız kg</th><th>Sonuç</th></tr>'+L.map(function(x){return'<tr><td>'+esc(label(x.p[0]))+'</td><td><a href="#soy-'+sid(x.p[1])+'">'+esc(label(x.p[1]))+'</a></td><td>'+x.c.D.m305.toLocaleString("tr-TR")+'</td><td>'+x.c.K.m305.toLocaleString("tr-TR")+'</td><td class="'+x.c.v[1]+'"><span class="chip w '+x.c.v[1]+'">'+x.c.v[0]+'</span></td></tr>'}).join("")+'</table></div>':'<p class="note">Henüz laktasyon kaydı olan anne-kız çifti yok.</p>');
+ var S={};function add(n,a,b){if(!n)return;var s=S[n]=S[n]||{n:0,a:0,b:0};s.n++;s.a+=a;s.b+=b}
+ L.forEach(function(x){add(getP(x.p[1]).baba,x.c.D.m305,x.c.K.m305)});if(!REAL())ARCH.forEach(function(p){add(p.sire,p.dam.m305,p.dau.m305)});
+ var rows=Object.keys(S).map(function(n){var s=S[n];return{n:n,k:s.n,a:s.a/s.n,b:s.b/s.n,f:(s.b-s.a)/s.n}}).sort(function(x,y){return y.f-x.f});
+ h+='<h2>Boğalara göre kızların durumu</h2><div class="card tw"><table><tr><th>Boğa</th><th>Kız</th><th>Anne ort.</th><th>Kız ort.</th><th>Fark</th><th>Üstünlük</th></tr>'+rows.map(function(r){var b=sireBv(r.n);return'<tr><td>'+esc(r.n)+'</td><td>'+r.k+'</td><td>'+Math.round(r.a).toLocaleString("tr-TR")+'</td><td>'+Math.round(r.b).toLocaleString("tr-TR")+'</td><td><b>'+fd(r.f)+'</b></td><td>'+(b==null?"-":fd(b))+'</td></tr>'}).join("")+'</table></div><p class="note">Fark, kızların annelerine göre ortalama kazancıdır. Az sayıda kızla yapılan boğa sıralaması güvenilir değildir.</p>';
+ app.innerHTML=h+DISC}
+var SIM={on:true,births:0,extra:0,toff:0,hoff:0,drift:0,evs:[],tasks:[],dry:["D-201","D-202","D-203"],unseen:0};
+var SIMT=[
+{id:"s1",cow:"104",type:"rx",t:"Mastitis tedavi uygulaması (hekim planına göre)",left:0},
+{id:"s2",cow:"109",type:"tohum",t:"Tohumlama zamanı (kızgınlık tespit edildi)",left:0},
+{id:"s3",cow:"118",type:"kontrol",t:"Gebelik kontrolü (35. gün)",left:1},
+{id:"s4",cow:"103",type:"asi",t:"Şap aşısı tekrarı",left:2},
+{id:"s5",cow:"121",type:"bakim",t:"Tırnak bakımı ve ayak kontrolü",left:-1},
+{id:"s6",cow:"125",type:"rx",t:"Hipokalsemi kontrol muayenesi",left:0,sev:2},
+{id:"s7",cow:"107",type:"asi",t:"İç ve dış parazit uygulaması",left:5},
+{id:"s8",cow:"115",type:"kuru",t:"Kuruya çıkarma",left:7},
+{id:"s9",cow:"126",type:"dogum",t:"Doğum bekleniyor",left:3},
+{id:"s10",cow:"114",type:"dogum",t:"Doğum bekleniyor",left:6},
+{id:"s11",cow:"112",type:"rx",t:"Ketozis şüphesi: BHB ölçümü",left:0}];
+var TT={asi:"Aşı ve parazit",tohum:"Tohumlama",rx:"İlaç",kontrol:"Kontrol",bakim:"Bakım",kuru:"Kuruya çıkarma",dogum:"Doğum",diger:"İş"};
+function isDone(id){return!!fin.done&&fin.done[id]===TODAY}
+function setDone(id){fin.done=fin.done||{};fin.done[id]=TODAY;save()}
+function remType(t){return/aşı|parazit/i.test(t)?"asi":/Gebelik/.test(t)?"kontrol":/Kuruya/.test(t)?"kuru":/doğum/i.test(t)?"dogum":"diger"}
+function evHtml(e){var c=["g","o","r"][e.sev],hr=e.cow?href(e.cow):"";return'<div class="al '+c+'"><b>'+e.time+'</b> '+esc(e.t)+(hr?'<p><a class="back" style="margin:0" href="'+hr+'">Hayvanı aç</a></p>':'')+'</div>'}
+function alarmHtml(){var T=allTasks(),G=[["Geciken işler",function(x){return x.left<0}],["Bugün",function(x){return x.left===0}],["Önümüzdeki 7 gün",function(x){return x.left>0&&x.left<=7}],["Daha sonra",function(x){return x.left>7}]],h='';
+ G.forEach(function(g){var L=T.filter(g[1]);if(L.length)h+='<h2>'+g[0]+' ('+L.length+')</h2>'+L.map(taskHtml).join("")});
+ if(!T.length)h+='<p class="note">Bekleyen iş yok.</p>';
+ h+='<h2>Son olaylar</h2>'+(SIM.evs.length?SIM.evs.slice(0,10).map(evHtml).join(""):'<p class="note">'+(REAL()?'Henüz olay yok.':'Henüz olay yok. Simülasyon açıkken olaylar kendiliğinden gelir.')+'</p>');
+ return h+'<p><a class="back" href="#gorevler">Görev merkezi</a> <a class="back" href="#stok">Stok</a></p><p class="note">'+(REAL()?'İşler girdiğin kayıtlardan hesaplanır.':'İşlerin çoğu simülasyondur. Kayıtlı hayvanların aşı, tohumlama ve reçete işleri gerçek kayıtlarından gelir.')+'</p>'}
+function barnSim(){var d=new Date(),h=d.getHours()+d.getMinutes()/60,w=Math.sin((h-9)/24*2*Math.PI),t=11+3*w+SIM.toff+SIM.drift,rh=Math.max(35,Math.min(95,72-7*w+SIM.hoff-SIM.drift*2));
+ return{t:t,rh:rh,thi:(1.8*t+32)-(.55-.0055*rh)*(1.8*t-26)}}
+function dayStatsSim(){var milk=0,d=new Date(),fr=Math.max(.04,(d.getHours()+d.getMinutes()/60)/24),feed=fin.feed*cows.length,ilac=0,vet=0,oth=SIM.extra,am=0,b=SIM.births,ex=0;
+ cows.forEach(function(c){milk+=c.today.sut});
+ fin.entries.forEach(function(e){if(e.d!==TODAY)return;if(e.t==="ilac")ilac+=e.amt;else if(e.t==="vet")vet+=e.amt;else if(e.t==="yem")feed+=e.amt;else oth+=e.amt});
+ fin.rx.forEach(function(r){if(r.start===TODAY)ilac+=r.cost||0});
+ fin.animals.forEach(function(a){if(a.gelis<=TODAY)am+=amortDay(a);if(a.sonDogum===TODAY)b++});
+ allTasks().forEach(function(x){if(x.type==="dogum"&&x.left<=7)ex++});
+ var rev=milk*fin.price,cost=feed+ilac+vet+am+oth;return{milk:milk,sofar:milk*fr,rev:rev,feed:feed,ilac:ilac,vet:vet,am:am,oth:oth,cost:cost,net:rev-cost,births:b,exp:ex,n:cows.length+fin.animals.filter(function(a){return(a.status||"Aktif")==="Aktif"}).length}}
+function tile(l,v,s,c){return'<div class="'+(c||"")+'"><span>'+l+'</span><b>'+v+'</b>'+(s?'<span>'+s+'</span>':'')+'</div>'}
+function barnHtmlSim(){var b=barn(),s=dayStats(),tl=b.thi<=68?"rahat":b.thi<=72?"hafif ısı stresi":b.thi<=80?"orta ısı stresi":"şiddetli ısı stresi";
+ return'<div class="mt">'+tile("Ahır sıcaklığı",b.t.toFixed(1).replace(".",",")+" °C","THI "+Math.round(b.thi)+", "+tl,b.thi>72?"o":"g")+tile("Bağıl nem",Math.round(b.rh)+" %","",b.rh>85||b.rh<45?"o":"g")+tile("Toplam hayvan",s.n,"demo sürü "+cows.length+", kayıtlı "+fin.animals.length)+tile("Günlük süt",Math.round(s.milk).toLocaleString("tr-TR")+" kg","şu ana kadar "+Math.round(s.sofar).toLocaleString("tr-TR")+" kg")+tile("Doğum (bugün)",s.births,"7 günde beklenen: "+s.exp)+tile("Kar/zarar (günlük)",(s.net>=0?"+":"−")+money(Math.abs(s.net)),"süt geliri "+money(s.rev),s.net>=0?"g":"r")+'</div>'+
+ '<h2>Günlük gider: '+money(s.cost)+'</h2><div class="card">'+[["Yem",s.feed],["İlaç",s.ilac],["Veteriner",s.vet],["Amortisman",s.am],["Diğer ve olay giderleri",s.oth]].map(function(x){return'<div class="kv"><span>'+x[0]+'</span><b>'+money(x[1])+'</b></div>'}).join("")+'</div>'+
+ '<h2>Son olaylar</h2>'+(SIM.evs.length?SIM.evs.slice(0,4).map(evHtml).join(""):'<p class="note">Henüz olay yok.</p>')+
+ '<p style="margin-top:12px"><button class="p" id="sv">Rastgele olay üret</button> <button id="st">Canlı simülasyon: '+(SIM.on?"açık":"kapalı")+'</button></p><p class="note">Sıcaklık, nem ve olaylar simülasyondur. Süt miktarı demo sürüden, gider ise girdiğin kayıtlardan hesaplanır.</p>'}
+var shv="",opener=null,SH=document.getElementById("sh");
+function drawSheet(){if(!shv)return;var t=document.getElementById("sht"),b=document.getElementById("shb");
+ if(shv==="al"){t.textContent="Yaklaşan işler";b.innerHTML=alarmHtml()}else{t.textContent="Ahır paneli";b.innerHTML=barnHtml()}
+ b.querySelectorAll("[data-dn]").forEach(function(x){x.onclick=function(){setDone(x.dataset.dn);drawSheet();updBadge()}});
+ b.querySelectorAll("a[href^='#']").forEach(function(x){x.addEventListener("click",closeSheet)});
+ var sv=document.getElementById("sv"),st=document.getElementById("st");
+ if(sv)sv.onclick=function(){genEvent(true)};if(st)st.onclick=function(){SIM.on=!SIM.on;drawSheet();toast(SIM.on?"Canlı simülasyon açıldı":"Canlı simülasyon kapatıldı")}}
+function openSheet(v){opener=document.activeElement;shv=v;if(v==="al"){SIM.unseen=0;SIM.evs.forEach(function(e){e.seen=true})}SH.hidden=false;document.body.style.overflow="hidden";drawSheet();updBadge();document.getElementById("shx").focus()}
+function closeSheet(){if(!shv)return;shv="";SH.hidden=true;document.body.style.overflow="";if(opener&&opener.focus)opener.focus()}
+function updBadge(){var T=allTasks(),n=T.filter(function(x){return x.left<=0}).length+SIM.unseen,bad=T.some(function(x){return x.left<0||x.sev>=2})||SIM.evs.some(function(e){return!e.seen&&e.sev>=2}),el=document.getElementById("bd");el.textContent=n>99?"99+":n;el.hidden=!n;el.className="bd"+(bad?" r":"")}
+function pickCow(){return String(cows[Math.floor(Math.random()*cows.length)].id)}
+var EVT=[
+function(){var c=pickCow();return{t:"İnek "+c+": ruminasyon süresi düştü, takibe alındı",sev:1,cow:c}},
+function(){var c=pickCow();SIM.tasks.push({id:"e"+uid(),cow:c,type:"tohum",t:"Kızgınlık tespit edildi: tohumlama penceresi",left:0,sev:1});return{t:"İnek "+c+": kızgınlık belirtisi tespit edildi",sev:1,cow:c}},
+function(){var k=SIM.dry.shift();if(!k)return null;SIM.births++;SIM.tasks.push({id:"e"+uid(),cow:k,type:"kontrol",t:"Doğum sonrası kontrol: plasenta ve kolostrum",left:0,sev:2});return{t:"Kuru dönemdeki "+k+" doğum yaptı",sev:2}},
+function(){SIM.extra+=1500;return{t:"Sağım robotunda arıza uyarısı, servis çağrıldı (1.500 TL)",sev:2}},
+function(){SIM.toff+=3.5;SIM.hoff-=6;return{t:"Ahır kapısı uzun süre açık kaldı, sıcaklık yükseldi",sev:0}},
+function(){SIM.extra+=300;return{t:"Kısa elektrik kesintisi, jeneratör devreye girdi (300 TL yakıt)",sev:1}},
+function(){var c=pickCow();return{t:"İnek "+c+": su tüketimi düştü",sev:1,cow:c}},
+function(){return{t:"Süt tankı sıcaklığı 4,9 °C, normal aralığın üst sınırında",sev:1}},
+function(){SIM.toff-=2;return{t:"Fanlar devreye girdi, ahır sıcaklığı düşüyor",sev:0}}];
+function genEvent(manual){if(REAL())return;var e=null,i=0;while(!e&&i++<10)e=EVT[Math.floor(Math.random()*EVT.length)]();if(!e)return;
+ var d=new Date(),ev={id:uid(),time:("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2),t:e.t,sev:e.sev,cow:e.cow||"",seen:shv==="al"};
+ SIM.evs.unshift(ev);SIM.evs=SIM.evs.slice(0,30);if(!ev.seen)SIM.unseen++;updBadge();if(!manual||!shv)toast(e.t);if(shv)drawSheet()}
+document.getElementById("bn").onclick=function(){openSheet("bar")};
+document.getElementById("bb").onclick=function(){openSheet("al")};
+document.getElementById("shx").onclick=closeSheet;
+document.querySelector(".shbg").onclick=closeSheet;
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeSheet()});
+window.addEventListener("hashchange",function(){closeSheet();updBadge()});
+setInterval(function(){SIM.drift=SIM.drift*.9+(Math.random()-.5)*.5;SIM.toff*=.85;SIM.hoff*=.85;if(SIM.on&&Math.random()<.35)genEvent();if(shv==="bar")drawSheet()},6000);
+setTimeout(function(){if(SIM.on)genEvent()},5000);
+var CATS0=["Mastitis","Metritis/endometritis","Ketozis","Hipokalsemi","Retensiyo sekundinarum","Topallık","Abomasum deplasmanı","Solunum yolu hastalıkları","Buzağı ishali","Göbek enfeksiyonu","Diğer"];
+function ensureFin(){["ev","tasks","stock","sm"].forEach(function(k){if(!Array.isArray(fin[k]))fin[k]=[]});fin.snz=fin.snz||{};fin.fb=fin.fb||{};if(!Array.isArray(fin.cats)||!fin.cats.length)fin.cats=CATS0.slice()}
+ensureFin();TT.stok="Stok";
+var EVF={
+muayene:[["ate","Vücut sıcaklığı (°C)","n"],["kalp","Kalp atışı (/dk)","n"],["sol","Solunum (/dk)","n"],["rum","Rumen hareketi (/2 dk)","n"],["bcs","BCS (1-5)","n"],["not","Klinik bulgular","t"]],
+vaka:[["kat","Hastalık kategorisi","s:CATS"],["kat2","Başka kategori (isteğe bağlı)","t"],["siddet","Şiddet","s:Hafif,Orta,Şiddetli"],["durum","Vaka durumu","s:Açık,Kontrolde,Kapandı"],["tani","Tanı / ön tanı","t"],["sonuc","Sonuç (kapanışta)","t"]],
+tohum:[["boga","Boğa / semen kodu","t"],["tekn","Teknisyen","t"],["mal","Maliyet (TL)","n"]],
+gebelik:[["yont","Yöntem","s:USG,Palpasyon,Test,Kayıt"],["sonuc","Sonuç","s:Pozitif,Negatif,Şüpheli"],["not","Not","t"]],
+dogum:[["kol","Doğum kolaylığı (1-5)","n"],["yavru","Yavru sayısı","n"],["not","Not","t"]],
+tartim:[["kg","Canlı ağırlık (kg)","n"],["yont","Yöntem","s:Kantar,Şerit,Tahmin"]],
+lab:[["test","Test (ör. BHBA, SCC)","t"],["deger","Sonuç","n"],["birim","Birim","t"],["ref","Referans aralığı","t"],["numune","Numune tipi","t"]],
+not:[["not","Not","t"]],
+durum:[["durum","Yeni durum","s:Aktif,Satıldı,İşletmeden çıkarıldı,Öldü,Kesildi,Kayıp"],["gerekce","Gerekçe","t"]]};
+var EVL={muayene:"Muayene",vaka:"Sağlık vakası",tohum:"Tohumlama",gebelik:"Gebelik muayenesi",dogum:"Doğum",tartim:"Tartım",lab:"Laboratuvar",not:"Not",durum:"Durum değişikliği",revir:"Revir",tedavi:"Tedavi (reçete)",gelis:"Geliş"};
+function addEv(cow,type,date,d,demo){var s=JSON.stringify(d||{});if(fin.ev.some(function(e){return e.cow===cow&&e.type===type&&e.date===date&&JSON.stringify(e.d||{})===s}))return false;fin.ev.push({id:uid(),cow:cow,type:type,date:date,d:d||{},ts:Date.now(),demo:demo?1:0});return true}
+function evText(e){var d=e.d||{},p=[];function a(l,v,u){if(v!==undefined&&v!==""&&v!==null)p.push(l+" "+v+(u||""))}
+ switch(e.type){case"muayene":a("ateş",d.ate," °C");a("kalp",d.kalp,"/dk");a("solunum",d.sol,"/dk");a("rumen",d.rum);a("BCS",d.bcs);break;
+ case"vaka":p.push(d.kat);a("şiddet",d.siddet);a("durum",d.durum);a("tanı",d.tani);a("sonuç",d.sonuc);break;
+ case"tohum":a("boğa",d.boga);a("teknisyen",d.tekn);if(d.mal)p.push("maliyet "+money(d.mal));break;
+ case"gebelik":p.push(d.sonuc);a("yöntem",d.yont);break;
+ case"dogum":a("doğum kolaylığı",d.kol);a("yavru",d.yavru);break;
+ case"tartim":a("ağırlık",d.kg," kg");a("yöntem",d.yont);break;
+ case"lab":p.push(d.test||"test");a("sonuç",d.deger===undefined?"":d.deger+(d.birim?" "+d.birim:""));a("referans",d.ref);a("numune",d.numune);break;
+ case"durum":p.push(d.durum);a("gerekçe",d.gerekce);break}
+ if(d.not)p.push(d.not);return p.filter(Boolean).join(", ")}
+function evBlock(key,sim){var E=fin.ev.filter(function(e){return e.cow===key}),R=fin.rx.filter(function(r){return String(r.cow)===key}),it=[],a=sim?null:getA(key);
+ E.forEach(function(e){it.push({date:e.date,type:e.type,t:evText(e),id:e.id,demo:e.demo})});
+ R.forEach(function(r){it.push({date:r.start,type:"tedavi",t:r.drug+(r.dx?" ("+r.dx+")":"")+", "+(r.days||0)+" gün"})});
+ if(a)it.push({date:a.gelis,type:"gelis",t:"Çiftliğe geldi"+(a.kaynak?", "+a.kaynak:"")});
+ it.sort(function(x,y){return x.date<y.date?1:-1});
+ var mw=R.filter(function(r){return+r.mw>0&&dd(addD(r.start,(+r.days||0)+(+r.mw)),TODAY)>0});
+ return'<h2>Kayıt ekle</h2><div class="card">'+(mw.length?'<div class="al r" style="margin-top:0"><b>Et arınmasında</b><p>Kesim listesine alınmamalı.</p></div>':'')+'<div class="frm"><div><label for="evt">Kayıt türü</label><select id="evt">'+Object.keys(EVF).filter(function(k){return!sim||k!=="durum"}).map(function(k){return'<option value="'+k+'">'+EVL[k]+'</option>'}).join("")+'</select></div><div><label for="evd">Tarih</label><input type="date" id="evd" value="'+TODAY+'"></div></div><div class="frm" id="evf" style="margin-top:10px"></div><p><button class="p" id="evs">Kaydı ekle</button></p></div><h2>Zaman çizelgesi ('+it.length+')</h2>'+(it.length?it.map(function(x){return'<div class="al n">'+(x.id?'<button class="x" data-evd="'+x.id+'">Sil</button>':'')+'<b>'+x.date+'</b> <span class="chip">'+EVL[x.type]+'</span>'+(x.demo?'<span class="chip">DEMO</span>':'')+'<p>'+esc(x.t||"")+'</p></div>'}).join(""):'<p class="note">Bu hayvan için kayıt yok.</p>')}
+function bindEv(key,sim,redraw){var $=function(i){return document.getElementById(i)};
+ function fields(){var f=EVF[$("evt").value],h="";f.forEach(function(x){var id="ef_"+x[0];if(x[2].charAt(0)==="s"){var o=x[2]==="s:CATS"?fin.cats:x[2].slice(2).split(",");h+='<div><label for="'+id+'">'+x[1]+'</label><select id="'+id+'">'+so(o)+'</select></div>'}else h+='<div'+(x[0]==="not"||x[0]==="tani"||x[0]==="gerekce"?' class="full"':'')+'><label for="'+id+'">'+x[1]+'</label><input type="'+(x[2]==="n"?"number":"text")+'"'+(x[2]==="n"?' step="any"':'')+' id="'+id+'"></div>'});$("evf").innerHTML=h}
+ $("evt").onchange=fields;fields();
+ $("evs").onclick=function(){var t=$("evt").value,d={},any=false,bad="";
+  EVF[t].forEach(function(x){var el=$("ef_"+x[0]),v=el.value.trim();if(x[2]==="n"){if(v==="")return;v=parseFloat(v);if(isNaN(v))return}else if(v==="")return;d[x[0]]=v;if(x[2].charAt(0)!=="s")any=true});
+  if(d.ate!==undefined&&(d.ate<34||d.ate>43))bad="Sıcaklık 34 ile 43 °C arasında olmalı";
+  if(d.bcs!==undefined&&(d.bcs<1||d.bcs>5))bad="BCS 1 ile 5 arasında olmalı";
+  if(d.kg!==undefined&&d.kg<=0)bad="Ağırlık sıfırdan büyük olmalı";
+  if(d.kol!==undefined&&(d.kol<1||d.kol>5))bad="Doğum kolaylığı 1 ile 5 arasında olmalı";
+  if(!bad&&!any&&["gebelik","durum","vaka"].indexOf(t)<0)bad="En az bir değer gir";
+  if(!bad&&t==="vaka"&&d.kat2){d.kat=d.kat2;if(fin.cats.indexOf(d.kat2)<0)fin.cats.splice(fin.cats.length-1,0,d.kat2);delete d.kat2}else if(d.kat2!==undefined)delete d.kat2;
+  if(bad){toast(bad);return}
+  var date=val("evd")||TODAY;if(date>TODAY&&t!=="not"){toast("Gelecek tarihli kayıt eklenemez");return}
+  addEv(key,t,date,d);var a=sim?null:getA(key);
+  if(a){if(t==="durum"){a.status=d.durum;a.statusDate=date;a.statusWhy=d.gerekce||""}if(t==="tohum"){a.tohum=date;a.gebe=false;if(d.boga)a.boga=d.boga}if(t==="gebelik"&&a.tohum)a.gebe=d.sonuc==="Pozitif"}
+  save();redraw();toast("Kayıt eklendi")};
+ document.querySelectorAll("[data-evd]").forEach(function(b){b.onclick=function(){fin.ev=fin.ev.filter(function(e){return e.id!==b.dataset.evd});save();redraw()}})}
+function pc(c,k){var m=M.filter(function(x){return x.k===k})[0],r=dv(c,k);return m.abs?(r>=0?"+":"−")+Math.abs(r).toFixed(1)+" °C":(r>=0?"+":"−")+Math.abs(r*100).toFixed(0)+" %"}
+var RULES=[
+{n:"Subklinik mastitis şüphesi",s:1,t:function(c){return dv(c,"ilet")>.08&&dv(c,"rum")<-.05},a:"Muayene önerilir: çeyrek bazlı süt kontrolü (ör. CMT) ve meme muayenesi.",w:function(c){return"süt iletkenliği "+pc(c,"ilet")+", ruminasyon "+pc(c,"rum")}},
+{n:"Subklinik ketozis şüphesi",s:1,t:function(c){return c.dim<70&&dv(c,"yem")<-.15&&dv(c,"rum")<-.1},a:"Muayene önerilir: BHB ölçümü ve enerji dengesinin değerlendirilmesi.",w:function(c){return"laktasyonun "+c.dim+". günü, yem süresi "+pc(c,"yem")+", ruminasyon "+pc(c,"rum")}},
+{n:"Rumen asidozu veya atoni şüphesi",s:1,t:function(c){return dv(c,"rum")<-.2&&dv(c,"mot")<-.15},a:"Muayene önerilir: rasyon yapısı, dışkı ve rumen durumunun değerlendirilmesi.",w:function(c){return"ruminasyon "+pc(c,"rum")+", rumen kasılması "+pc(c,"mot")}},
+{n:"Kızgınlık paterni",s:0,t:function(c){return dv(c,"adm")>.35&&dv(c,"yat")<-.1},a:"Tohumlama zamanı için takip önerilir (hekim kararı).",w:function(c){return"adım sayısı "+pc(c,"adm")+", yatma süresi "+pc(c,"yat")}},
+{n:"Topallık veya ayak sorunu şüphesi",s:1,t:function(c){return dv(c,"yat")>.2&&dv(c,"adm")<-.2},a:"Muayene önerilir: ayak muayenesi ve lokomosyon skoru.",w:function(c){return"yatma süresi "+pc(c,"yat")+", adım sayısı "+pc(c,"adm")}},
+{n:"Hipokalsemi riski",s:2,t:function(c){return c.fresh&&dv(c,"ate")<-.5&&dv(c,"mot")<-.25},a:"Acil muayene önerilir: doğum çevresinde sıcaklık ve rumen hareketi düşüşü.",w:function(c){return"geçiş dönemi, iç sıcaklık "+pc(c,"ate")+", rumen kasılması "+pc(c,"mot")}},
+{n:"Isı stresi veya ateş",s:1,t:function(c){return dv(c,"sol")>.3&&dv(c,"ate")>.4},a:"Ortam koşullarını (fan, duş, su erişimi) kontrol et; ateş olasılığı için muayene önerilir.",w:function(c){return"solunum "+pc(c,"sol")+", iç sıcaklık "+pc(c,"ate")}}];
+function fbBtn(c,r){var k=c.id+":"+r.n,v=fin.fb[k];return v?'<span class="chip">Geri bildirim: '+(v==="dogru"?"uyarı doğruydu":"yanlış alarm")+'</span>':'<button data-fb="'+k+'|dogru">Uyarı doğruydu</button> <button data-fb="'+k+'|yanlis">Yanlış alarm</button>'}
+function allTasks(){var o=[],hid=function(id){return isDone(id)||(fin.snz[id]&&fin.snz[id]>TODAY)};
+ SIMT.forEach(function(s){if(!REAL()&&!hid(s.id))o.push({id:s.id,cow:s.cow,type:s.type,t:s.t,left:s.left,sev:s.sev||0,src:"simülasyon"})});
+ SIM.tasks.forEach(function(s){if(!REAL()&&!hid(s.id))o.push({id:s.id,cow:s.cow||"",type:s.type,t:s.t,left:s.left,sev:s.sev||0,src:"olay"})});
+ fin.animals.forEach(function(a){if((a.status||"Aktif")!=="Aktif")return;var md=milkDrop(a.kupe);if(md&&!hid("m:"+a.id+":"+md.last.date))o.push({id:"m:"+a.id+":"+md.last.date,cow:a.kupe,type:"kontrol",t:"Süt düşüşü: muayene önerilir",left:0,sev:1,src:"kayıtlı hayvan"});rem(a).forEach(function(x){var id="r:"+a.id+":"+x.t;if(x.left<=14&&!hid(id))o.push({id:id,cow:a.kupe,type:remType(x.t),t:x.t,left:x.left,sev:x.left<0?1:0,src:"kayıtlı hayvan"})})});
+ fin.rx.forEach(function(r){var d=+r.days||0,k=dd(TODAY,r.start),id="x:"+r.id+":"+TODAY,l=wdLeft(r);
+  if(d>0&&k>=0&&k<d&&!hid(id))o.push({id:id,cow:String(r.cow),type:"rx",t:"İlaç zamanı: "+r.drug+" (gün "+(k+1)+"/"+d+")",left:0,sev:0,src:"reçete"});
+  if(+r.wd>0&&l>0&&l<=2&&!hid("w:"+r.id))o.push({id:"w:"+r.id,cow:String(r.cow),type:"kontrol",t:"Süt arınması bitiyor: "+r.drug,left:l,sev:0,src:"reçete"})});
+ fin.tasks.forEach(function(g){if(g.status==="Açık")o.push({id:"g:"+g.id,gid:g.id,cow:g.cow||"",type:"diger",t:g.t,left:dd(g.due,TODAY),sev:g.pri==="Yüksek"?1:0,src:"görev",link:"#gorevler",who:g.who})});
+ fin.stock.forEach(function(s){if(+s.min>0&&+s.miktar<=+s.min&&!hid("k:"+s.id))o.push({id:"k:"+s.id,cow:"",type:"stok",t:"Kritik stok: "+s.ad+" ("+s.miktar+" "+s.birim+")",left:0,sev:1,src:"stok",link:"#stok"});
+  if(s.skt){var l=dd(s.skt,TODAY);if(l<=30&&!hid("s:"+s.id))o.push({id:"s:"+s.id,cow:"",type:"stok",t:"Son kullanma tarihi: "+s.ad+(l<0?" (geçti)":""),left:l,sev:l<0?1:0,src:"stok",link:"#stok"})}});
+ return o.sort(function(a,b){return a.left-b.left||b.sev-a.sev})}
+function taskHtml(x){var cls=x.sev>=2||x.left<0?"r":x.left===0?"o":x.left<=2?"y":"g",hr=x.link||(x.cow?href(x.cow):""),
+ cd=x.left<0?Math.abs(x.left)+" gün gecikti":x.left===0?"bugün":x.left===1?"yarın":addD(TODAY,x.left),dn=x.src==="simülasyon"||x.src==="olay"||x.id.indexOf("x:")===0,bt;
+ if(x.src==="görev")bt='<button data-gd="'+x.gid+'">Tamamla</button> <button data-sn="'+x.id+'">Ertele</button>';
+ else bt=(dn?'<button data-dn="'+x.id+'">Yapıldı</button> ':'')+'<button data-sn="'+x.id+'">Ertele</button> <button data-fa="'+x.id+'">Yanlış alarm</button>';
+ return'<div class="al '+cls+'"><b>'+esc(x.cow?label(x.cow)+": ":"")+esc(x.t)+'</b> <span class="chip w '+cls+'">'+cd+'</span><p>'+TT[x.type]+', '+x.src+(x.who?', sorumlu '+esc(x.who):'')+'</p><p style="margin-top:6px">'+(hr?'<a class="back" style="margin:0 12px 0 0" href="'+hr+'">'+(x.link?"Aç":"Hayvanı aç")+'</a>':'')+bt+'</p></div>'}
+function taskAct(e){var b=e.target.closest&&e.target.closest("[data-sn],[data-fa],[data-gd]");if(!b)return;var msg="";
+ if(b.dataset.gd){var g=fin.tasks.filter(function(x){return x.id===b.dataset.gd})[0];if(g){g.status="Tamamlandı";g.done=TODAY;if(+g.rep>0)fin.tasks.push({id:uid(),cow:g.cow,t:g.t,due:addD(TODAY,+g.rep),pri:g.pri,who:g.who,rep:g.rep,status:"Açık"})}msg="Görev tamamlandı"}
+ else if(b.dataset.sn){var id=b.dataset.sn;if(id.indexOf("g:")===0){var g2=fin.tasks.filter(function(x){return x.id===id.slice(2)})[0];if(g2)g2.due=addD(TODAY,1)}else fin.snz[id]=addD(TODAY,1);msg="Yarına ertelendi"}
+ else{fin.snz[b.dataset.fa]=addD(TODAY,1);fin.fbn=(fin.fbn||0)+1;msg="Yanlış alarm olarak işaretlendi"}
+ save();updBadge();if(shv)drawSheet();else if(location.hash==="#gorevler")viewGor();toast(msg)}
+document.getElementById("shb").addEventListener("click",taskAct);app.addEventListener("click",taskAct);
+function viewGor(){var T=fin.tasks,op=T.filter(function(g){return g.status==="Açık"}).sort(function(a,b){return a.due<b.due?-1:1}),dn=T.filter(function(g){return g.status!=="Açık"}).slice(-8).reverse(),od=op.filter(function(g){return g.due<TODAY}).length,fb=Object.keys(fin.fb).map(function(k){return fin.fb[k]});
+ var h='<a class="back" href="#suru">Sürüye dön</a><h1>Görev merkezi</h1><div class="sub">'+op.length+' açık görev, '+od+' geciken, '+dn.length+' son tamamlanan. Geri bildirim: '+fb.filter(function(x){return x==="yanlis"}).length+' yanlış alarm, '+fb.filter(function(x){return x==="dogru"}).length+' doğru uyarı, '+(fin.fbn||0)+' yanlış alarm işareti (iş listesinden).</div>';
+ h+='<h2>Görev ekle</h2><div class="card"><div class="frm"><div class="full"><label for="gt">Görev</label><input type="text" id="gt" placeholder="ör. tırnak bakımı, tartım"></div><div><label for="gc">Hayvan</label><select id="gc"><option value="">Genel (hayvan yok)</option>'+cowOpts(false)+'</select></div><div><label for="gdt">Son tarih</label><input type="date" id="gdt" value="'+TODAY+'"></div><div><label for="gp">Öncelik</label><select id="gp">'+so(["Düşük","Normal","Yüksek"],"Normal")+'</select></div><div><label for="gw">Sorumlu</label><input type="text" id="gw"></div><div class="full"><label for="gr">Tekrar aralığı (gün, tekrar yoksa boş)</label><input type="number" id="gr"></div><div class="full"><button class="p" id="gb">Görevi ekle</button></div></div></div>';
+ h+='<h2>Açık görevler</h2>'+(op.map(function(g){var l=dd(g.due,TODAY),cls=l<0?"r":l===0?"o":"g";return'<div class="al '+cls+'"><button class="x" data-gx="'+g.id+'">Sil</button><b>'+(g.cow?esc(label(g.cow))+": ":"")+esc(g.t)+'</b> <span class="chip w '+cls+'">'+(l<0?Math.abs(l)+" gün gecikti":l===0?"bugün":g.due)+'</span><p>Öncelik '+g.pri+(g.who?", sorumlu "+esc(g.who):"")+(+g.rep>0?", her "+g.rep+" günde bir":"")+'</p><p style="margin-top:6px"><button data-gd="'+g.id+'">Tamamla</button> <button data-sn="g:'+g.id+'">Ertele</button></p></div>'}).join("")||'<p class="note">Açık görev yok.</p>');
+ h+=dn.length?'<h2>Son tamamlananlar</h2>'+dn.map(function(g){return'<div class="al n"><b>'+esc(g.t)+'</b><p>'+(g.done||"")+'</p></div>'}).join(""):"";
+ app.innerHTML=h;
+ document.getElementById("gb").onclick=function(){var t=val("gt").trim();if(!t){toast("Görev adını gir");return}fin.tasks.push({id:uid(),cow:val("gc"),t:t,due:val("gdt")||TODAY,pri:val("gp"),who:val("gw").trim(),rep:num("gr")||0,status:"Açık"});save();viewGor();updBadge();toast("Görev eklendi")};
+ app.querySelectorAll("[data-gx]").forEach(function(b){b.onclick=function(){fin.tasks=fin.tasks.filter(function(g){return g.id!==b.dataset.gx});save();viewGor();updBadge()}})}
+function viewStok(){var S=fin.stock,h='<a class="back" href="#suru">Sürüye dön</a><h1>Stok</h1><div class="sub">İlaç, aşı, yem ve sarf malzeme stokları. Kritik seviye ve son kullanma uyarıları iş listesine düşer.</div>';
+ h+='<h2>Ürün ekle</h2><div class="card"><div class="frm"><div class="full"><label for="sx_ad">Ürün adı</label><input type="text" id="sx_ad"></div><div><label for="sx_tur">Tür</label><select id="sx_tur">'+so(["İlaç","Aşı","Yem","Sarf malzeme","Ekipman"])+'</select></div><div><label for="sx_bi">Birim</label><input type="text" id="sx_bi" placeholder="kutu, kg, doz"></div><div><label for="sx_mi">Miktar</label><input type="number" step="any" id="sx_mi"></div><div><label for="sx_mn">Minimum seviye</label><input type="number" step="any" id="sx_mn"></div><div><label for="sx_lt">Lot / seri</label><input type="text" id="sx_lt"></div><div><label for="sx_sk">Son kullanma</label><input type="date" id="sx_sk"></div><div><label for="sx_td">Tedarikçi</label><input type="text" id="sx_td"></div><div><label for="sx_fy">Birim fiyat (TL)</label><input type="number" step="any" id="sx_fy"></div><div class="full"><button class="p" id="sx_ab">Ürünü ekle</button></div></div></div>';
+ h+='<h2>Stok kartları ('+S.length+')</h2>'+(S.map(function(s){var w=[];if(+s.min>0&&+s.miktar<=+s.min)w.push(["Kritik stok","r"]);if(s.skt){var l=dd(s.skt,TODAY);if(l<0)w.push(["SKT geçti","r"]);else if(l<=30)w.push(["SKT "+l+" gün","o"])}
+  return'<div class="al '+(w.length?w[0][1]:"g")+'"><button class="x" data-xs="'+s.id+'">Sil</button><b>'+esc(s.ad)+'</b> <span class="chip">'+esc(s.tur)+'</span>'+(s.demo?'<span class="chip">DEMO</span>':'')+w.map(function(x){return'<span class="chip w '+x[1]+'">'+x[0]+'</span>'}).join("")+'<p>'+s.miktar+' '+esc(s.birim||"")+(+s.min>0?', minimum '+s.min:'')+(s.lot?', lot '+esc(s.lot):'')+(s.skt?', SKT '+s.skt:'')+(s.ted?', '+esc(s.ted):'')+(s.fy?', birim '+money(s.fy):'')+'</p><p style="margin-top:6px"><input type="number" step="any" data-sq="'+s.id+'" placeholder="miktar" style="width:90px"> <button data-si="'+s.id+'">Giriş</button> <button data-so="'+s.id+'">Çıkış</button></p></div>'}).join("")||'<p class="note">Stok kartı yok. Yukarıdan ilk ürünü ekle.</p>');
+ var Mv=fin.sm.slice(-8).reverse();h+='<h2>Son hareketler</h2>'+(Mv.length?'<div class="card tw"><table><tr><th>Tarih</th><th>Ürün</th><th>Hareket</th><th>Miktar</th></tr>'+Mv.map(function(m){return'<tr><td>'+m.tarih+'</td><td>'+esc(m.ad)+'</td><td>'+m.tip+'</td><td>'+m.miktar+'</td></tr>'}).join("")+'</table></div>':'<p class="note">Hareket yok.</p>');
+  app.innerHTML=h;var $=function(i){return document.getElementById(i)};
+ $("sx_ab").onclick=function(){var ad=$("sx_ad").value.trim(),mi=parseFloat($("sx_mi").value);if(!ad){toast("Ürün adını gir");return}if(isNaN(mi)||mi<0){toast("Miktarı gir");return}fin.stock.push({id:uid(),ad:ad,tur:$("sx_tur").value,birim:$("sx_bi").value.trim(),miktar:mi,min:parseFloat($("sx_mn").value)||0,lot:$("sx_lt").value.trim(),skt:$("sx_sk").value,ted:$("sx_td").value.trim(),fy:parseFloat($("sx_fy").value)||0});save();viewStok();updBadge();toast("Ürün eklendi")};
+ function mv(id,tip){var inp=app.querySelector('[data-sq="'+id+'"]'),q=parseFloat(inp.value),s=fin.stock.filter(function(x){return x.id===id})[0];if(!(q>0)){toast("Miktarı gir");return}if(tip==="Çıkış"&&q>s.miktar){toast("Stokta yeterli ürün yok");return}s.miktar=+(s.miktar+(tip==="Giriş"?q:-q)).toFixed(3);fin.sm.push({id:uid(),sid:id,ad:s.ad,tip:tip,miktar:q,tarih:TODAY});save();viewStok();updBadge();toast(tip+" kaydedildi")}
+ app.querySelectorAll("[data-si]").forEach(function(b){b.onclick=function(){mv(b.dataset.si,"Giriş")}});
+ app.querySelectorAll("[data-so]").forEach(function(b){b.onclick=function(){mv(b.dataset.so,"Çıkış")}});
+ app.querySelectorAll("[data-xs]").forEach(function(b){b.onclick=function(){fin.stock=fin.stock.filter(function(x){return x.id!==b.dataset.xs});save();viewStok();updBadge()}})}
+function evOf(t){return fin.ev.filter(function(e){return e.type===t&&getA(e.cow)})}
+function byCow(L){var m={};L.forEach(function(e){(m[e.cow]=m[e.cow]||[]).push(e)});Object.keys(m).forEach(function(k){m[k].sort(function(a,b){return a.date<b.date?-1:1})});return m}
+function outcome(L,i,G){var nx=L[i+1]?L[i+1].date:"9999-12-31",r=null;G.forEach(function(g){if(!r&&g.date>L[i].date&&g.date<nx&&(g.d.sonuc==="Pozitif"||g.d.sonuc==="Negatif"))r=g.d.sonuc});return r}
+function avg(a){return a.length?a.reduce(function(x,y){return x+y},0)/a.length:null}
+function rate(n,d){return d>0?(n/d*100).toFixed(1).replace(".",",")+" %":null}
+var KD=365;
+function kpi(days){var from=addD(TODAY,-days+1),A=fin.animals.filter(function(a){return(a.status||"Aktif")==="Aktif"}),N=A.length,lac=A.filter(function(a){return a.durum==="Sağmal inek"}).length,inP=function(d){return d>=from&&d<=TODAY},
+ T=byCow(evOf("tohum")),G=byCow(evOf("gebelik")),B=byCow(evOf("dogum")),V=evOf("vaka"),Vp=V.filter(function(e){return inP(e.date)}),K=[],open={};
+ V.forEach(function(e){if(e.d.durum!=="Kapandı"&&A.some(function(a){return a.kupe===e.cow}))open[e.cow]=1});
+ K.push({n:"Hastalık insidansı",num:Vp.length,den:N,def:"Dönemdeki yeni vakalar / aktif kayıtlı hayvan sayısı."});
+ K.push({n:"Mastitis insidansı",num:Vp.filter(function(e){return e.d.kat==="Mastitis"}).length,den:lac,def:"Dönemdeki yeni mastitis vakaları / sağmal inek sayısı."});
+ K.push({n:"Hastalık prevalansı",num:Object.keys(open).length,den:N,def:"Açık veya kontrolde vakası olan hayvan / aktif kayıtlı hayvan sayısı."});
+ var gp=0,gt=0,gs=0;Object.keys(G).forEach(function(c){var L=G[c].filter(function(e){return inP(e.date)});if(!L.length)return;var l=L[L.length-1].d.sonuc;if(l==="Pozitif"){gp++;gt++}else if(l==="Negatif")gt++;else gs++});
+ K.push({n:"Gebelik oranı",num:gp,den:gt,def:"Dönemde gebelik muayenesi yapılan hayvanlardan son muayenede gebe bulunanlar. Şüpheli sonuçlar dışarıda ("+gs+" hayvan)."});
+ var cs=0,ct=0,cu=0,fs=0,ft=0,od=[];
+ Object.keys(T).forEach(function(c){var L=T[c],Gc=G[c]||[],Bc=B[c]||[];L.forEach(function(t,i){var o=outcome(L,i,Gc);
+  if(inP(t.date)){if(o==="Pozitif"){cs++;ct++}else if(o==="Negatif")ct++;else cu++}
+  var lb="";Bc.forEach(function(b){if(b.date<=t.date)lb=b.date});
+  var first=!L.slice(0,i).some(function(p){return p.date>lb});if(first&&inP(t.date)&&o){ft++;if(o==="Pozitif")fs++}
+  if(o==="Pozitif"&&lb&&inP(t.date)){var prev=L.slice(0,i).some(function(p,j){return p.date>lb&&outcome(L,j,Gc)==="Pozitif"});if(!prev)od.push(dd(t.date,lb))}})});
+ K.push({n:"Konsepsiyon oranı",num:cs,den:ct,def:"Tohumlama başına gebelik: sonraki gebelik muayenesi pozitif olan tohumlama / sonucu bilinen tohumlama. Sonucu bilinmeyen "+cu+" tohumlama dahil edilmedi."});
+ K.push({n:"İlk tohumlamada gebelik",num:fs,den:ft,def:"Doğumdan sonraki ilk tohumlaması gebelikle sonuçlanan / sonucu bilinen ilk tohumlama."});
+ K.push({n:"Açık gün",val:od.length?Math.round(avg(od))+" gün":null,sub:od.length+" hayvan",def:"Doğumdan gebeliğin oluştuğu tohumlama tarihine kadar geçen gün ortalaması."});
+ var ci=[];Object.keys(B).forEach(function(c){var L=B[c];for(var i=1;i<L.length;i++)if(inP(L[i].date))ci.push(dd(L[i].date,L[i-1].date))});
+ K.push({n:"Buzağılama aralığı",val:ci.length?Math.round(avg(ci))+" gün":null,sub:ci.length+" aralık",def:"Birbirini izleyen iki doğum arasındaki gün ortalaması."});
+ var calves=fin.animals.filter(function(a){return a.anne&&a.dogum&&inP(a.dogum)});
+ K.push({n:"Buzağı ölüm oranı",num:calves.filter(function(a){return a.status==="Öldü"}).length,den:calves.length,def:"Dönemde doğan buzağılardan ölen / aynı dönemde doğan buzağılar."});
+ var W=byCow(evOf("tartim")),ad=[];Object.keys(W).forEach(function(c){var L=W[c].filter(function(e){return inP(e.date)&&e.d.kg>0});if(L.length>=2){var dy=dd(L[L.length-1].date,L[0].date);if(dy>0)ad.push((L[L.length-1].d.kg-L[0].d.kg)/dy)}});
+ K.push({n:"Günlük canlı ağırlık artışı",val:ad.length?avg(ad).toFixed(2).replace(".",",")+" kg/gün":null,sub:ad.length+" hayvan",def:"(Son ağırlık - ilk ağırlık) / iki tartım arasındaki gün, dönemdeki en az iki tartımı olan hayvanlar."});
+ return{K:K,N:N,cu:cu,miss:{dogum:A.filter(function(a){return!a.dogum}).length,alis:A.filter(function(a){return!a.tl&&!a.usd}).length}}}
+function viewKpi(){var R=kpi(KD),demo=fin.animals.filter(function(a){return a.demo}).length,mk=0;cows.forEach(function(c){mk+=c.today.sut});
+ var h='<a class="back" href="#suru">Sürüye dön</a><h1>KPI raporu</h1><div class="sub">Yalnızca sisteme girdiğin kayıtlardan hesaplanır. Veri yoksa "Veri bulunamadı" yazar, eksik değer sıfır sayılmaz.</div><div class="card" style="margin-top:12px"><div class="frm"><div><label for="kd">Dönem</label><select id="kd">'+[30,90,180,365].map(function(d){return'<option value="'+d+'"'+(d===KD?" selected":"")+'>Son '+d+' gün</option>'}).join("")+'</select></div><div><label>Kapsam</label><div class="note" style="padding-top:10px">'+R.N+' aktif kayıtlı hayvan</div></div></div>'+(demo?'<p class="note"><span class="chip">DEMO</span> '+demo+' demo hayvan hesaba dahil. Gerçek veri girmeden önce demo kayıtları temizle.</p>':'')+'<p><button id="kdm">Örnek (demo) kayıt yükle</button> <button id="kdc">Demo kayıtları temizle</button></p></div>';
+ R.K.forEach(function(k){var v=k.val!==undefined?k.val:rate(k.num,k.den),sub=k.val!==undefined?(v?k.sub:""):(v?k.num+" / "+k.den:"");h+='<div class="card" style="margin-top:8px"><b>'+k.n+'</b><div style="font-size:22px;font-weight:700;color:'+(v?"var(--ink)":"var(--mut)")+'">'+(v||"Veri bulunamadı")+'</div>'+(sub?'<div class="note">'+sub+'</div>':'')+'<div class="note">'+k.def+'</div></div>'});
+ h+=kpiMilk();
+ h+='<h2>Veri kalitesi</h2><div class="card"><div class="kv"><span>Doğum tarihi girilmemiş hayvan</span><b>'+R.miss.dogum+' / '+R.N+'</b></div><div class="kv"><span>Alış fiyatı girilmemiş hayvan</span><b>'+R.miss.alis+' / '+R.N+'</b></div><div class="kv"><span>Sonucu bilinmeyen tohumlama</span><b>'+R.cu+'</b></div></div><p class="note">Tahmini kayıp ve oranlar yalnızca girilen kayıtlara dayanır. Küçük örneklemde oranlar çok oynaktır.</p>';
+ app.innerHTML=h;
+ document.getElementById("kd").onchange=function(){KD=+val("kd");viewKpi()};
+ document.getElementById("kdm").onclick=function(){seedDemo()};
+ document.getElementById("kdc").onclick=function(){clearDemo()}}
+function seedDemo(){if(fin.animals.some(function(a){return a.demo})){toast("Demo kayıtlar zaten yüklü");return}
+ var r=function(a,b){return a+Math.floor(Math.random()*(b-a+1))};
+ for(var i=1;i<=8;i++){var k="DEMO-0"+i,d0=addD(TODAY,-r(200,260)),a={id:uid(),kupe:k,cins:"Holstein",cinsiyet:"Dişi",durum:"Sağmal inek",dogum:addD(TODAY,-r(900,2200)),gelis:addD(TODAY,-r(300,500)),tl:r(90,140)*1000,usd:0,kur:fin.kur,kaynak:"Demo kayıt",omur:4,hurda:0,anne:"",baba:"",demo:true,status:"Aktif"};
+  a.usd=+(a.tl/fin.kur).toFixed(2);fin.animals.push(a);
+  addEv(k,"dogum",addD(d0,-r(360,420)),{yavru:1},1);addEv(k,"dogum",d0,{yavru:1},1);
+  var t1=addD(d0,r(55,80));addEv(k,"tohum",t1,{boga:"Atlas 5521"},1);
+  if(i%3===0){addEv(k,"gebelik",addD(t1,35),{sonuc:"Negatif",yont:"USG"},1);var t2=addD(t1,r(21,30));addEv(k,"tohum",t2,{boga:"Zeus 3340"},1);addEv(k,"gebelik",addD(t2,35),{sonuc:"Pozitif",yont:"USG"},1);a.tohum=t2;a.gebe=true;a.boga="Zeus 3340"}
+  else{var neg=i%4===0;addEv(k,"gebelik",addD(t1,35),{sonuc:neg?"Negatif":"Pozitif",yont:"USG"},1);if(!neg){a.tohum=t1;a.gebe=true;a.boga="Atlas 5521"}}
+  if(i%2===0)addEv(k,"vaka",addD(TODAY,-r(5,120)),{kat:"Mastitis",siddet:"Hafif",durum:i===2?"Açık":"Kapandı"},1);
+  if(i===5)addEv(k,"vaka",addD(TODAY,-r(5,40)),{kat:"Topallık",siddet:"Orta",durum:"Kontrolde"},1);
+  var w=r(600,640);addEv(k,"tartim",addD(TODAY,-60),{kg:w},1);addEv(k,"tartim",addD(TODAY,-5),{kg:w+r(25,50)},1)}
+ [["DEMO-B1","Atlas 5521","Aktif"],["DEMO-B2","Zeus 3340","Öldü"]].forEach(function(c,j){fin.animals.push({id:uid(),kupe:c[0],cins:"Holstein",cinsiyet:"Dişi",durum:"Buzağı",dogum:addD(TODAY,-r(30,90)),gelis:TODAY,tl:0,usd:0,kur:fin.kur,kaynak:"Demo kayıt",omur:4,hurda:0,anne:"DEMO-0"+(j+1),baba:c[1],demo:true,status:c[2]})});
+ fin.stock.push({id:uid(),ad:"Örnek antibiyotik",tur:"İlaç",birim:"kutu",miktar:2,min:3,lot:"D-101",skt:addD(TODAY,20),ted:"Demo",fy:850,demo:1},{id:uid(),ad:"Örnek aşı",tur:"Aşı",birim:"doz",miktar:40,min:10,lot:"D-202",skt:addD(TODAY,200),ted:"Demo",fy:60,demo:1});
+ save();viewKpi();updBadge();toast("Demo kayıtlar yüklendi")}
+function clearDemo(){fin.animals=fin.animals.filter(function(a){return!a.demo});fin.ev=fin.ev.filter(function(e){return!e.demo});fin.stock=fin.stock.filter(function(s){return!s.demo});save();viewKpi();updBadge();toast("Demo kayıtlar silindi")}
+
+updBadge();
+var DEMO=cows,GD="";
+function REAL(){return fin.mode==="gercek"}
+function activeA(){return fin.animals.filter(function(a){return(a.status||"Aktif")==="Aktif"})}
+function nHerd(){return REAL()?activeA().length:cows.length}
+function isMilking(a){return a.durum==="Sağmal inek"}
+function applyMode(){fin.milk=Array.isArray(fin.milk)?fin.milk:[];fin.env=Array.isArray(fin.env)?fin.env:[];var want=REAL()?[]:DEMO;if(cows!==want){cows=want;recalc()}if(REAL()){SIM.on=false;SIM.evs=[];SIM.unseen=0}updBadge()}
+function milkOf(k){return fin.milk.filter(function(m){return m.cow===k}).sort(function(a,b){return a.date<b.date?-1:1})}
+function milkDrop(k){var L=milkOf(k),last=L[L.length-1];if(!last||last.date<addD(TODAY,-2))return null;
+ var prev=L.filter(function(m){return m.date<last.date&&m.date>=addD(last.date,-8)});if(prev.length<4)return null;
+ var b=mean(prev.map(function(m){return m.kg})),r=b>0?(last.kg-b)/b:0;return r<-.15?{r:r,b:b,last:last}:null}
+function milkDays(){var from=addD(TODAY,-13),s={};fin.milk.forEach(function(m){if(m.date>=from&&getA(m.cow))s[m.date]=1});return Object.keys(s).length}
+function rcow(a){var h=[];for(var i=13;i>=0;i--){var d=addD(TODAY,-i),m=fin.milk.filter(function(x){return x.cow===a.kupe&&x.date===d})[0];if(m)h.push(m.kg)}return{id:a.kupe,aid:a.id,hist:{sut:h.length?h:[0]}}}
+function milkBlock(k){var L=milkOf(k).slice(-14),d=milkDrop(k);
+ if(!L.length)return'<h2>Süt verimi</h2><div class="card"><p class="note" style="margin-top:0">Veri bulunamadı. Süt miktarını Günlük giriş sayfasından girin.</p><a class="back" href="#gunluk">Günlük giriş</a></div>';
+ var mx=Math.max.apply(0,L.map(function(m){return m.kg}))*1.1||1,W=300,H=80,bw=W/14,s='<svg viewBox="0 0 '+W+' '+(H+14)+'" width="100%" role="img" aria-label="Son süt girişleri">';
+ L.forEach(function(m,i){var h=m.kg/mx*H;s+='<rect x="'+(i*bw+1).toFixed(1)+'" y="'+(H-h).toFixed(1)+'" width="'+(bw-3).toFixed(1)+'" height="'+h.toFixed(1)+'" rx="2" fill="var(--acc)" opacity="'+(i===L.length-1?1:.55)+'"/>'});
+ s+='<text x="0" y="'+(H+11)+'" font-size="9" fill="var(--mut)">'+L[0].date.slice(5)+'</text><text x="'+W+'" y="'+(H+11)+'" font-size="9" text-anchor="end" fill="var(--mut)">'+L[L.length-1].date.slice(5)+'</text></svg>';
+ var l7=L.slice(-7).map(function(m){return m.kg});
+ return'<h2>Süt verimi</h2><div class="card">'+s+'<div class="kv"><span>Son giriş ('+L[L.length-1].date+')</span><b>'+L[L.length-1].kg+' kg</b></div><div class="kv"><span>Son '+l7.length+' giriş ortalaması</span><span>'+mean(l7).toFixed(1).replace(".",",")+' kg</span></div><div class="kv"><span>En yüksek (son '+L.length+' giriş)</span><span>'+Math.max.apply(0,L.map(function(m){return m.kg}))+' kg</span></div>'+(d?'<div class="al o" style="margin-top:8px"><b>Süt düşüşü</b><p>Son giriş '+d.last.kg+' kg, önceki günlerin ortalamasına ('+d.b.toFixed(1).replace(".",",")+' kg) göre yüzde '+Math.round(-d.r*100)+' düşük. Muayene önerilir; laktasyon günü, yem değişikliği, kızgınlık ve sağım koşullarıyla birlikte değerlendirin.</p></div>':'')+'<a class="back" href="#gunluk" style="margin-top:6px">Günlük giriş</a></div>'}
+function rowAR(a){var d=milkDrop(a.kupe),u=rem(a).filter(function(x){return x.left<=14}).length,L=milkOf(a.kupe),last=L[L.length-1],wd=inWd(a.kupe).length,cls=wd||d?"r":u?"o":"g",ch="";
+ if(wd)ch+='<span class="chip w r">Süt arınmada</span> ';if(d)ch+='<span class="chip w o">Süt düşüşü</span> ';if(a.demo)ch+='<span class="chip">DEMO</span> ';
+ return{rank:wd||d?0:u?1:2,h:'<a class="row '+cls+'" href="#hayvan-'+a.id+'"><div class="mid"><b>'+esc(a.kupe)+'</b><span>'+esc(a.cins)+', '+esc(a.durum)+', '+ageStr(a.dogum)+(u?', '+u+' yaklaşan iş':'')+'</span>'+(ch?'<br>'+ch:'')+'</div><div class="sc" style="font-size:16px;min-width:70px">'+(last?last.kg+' kg':'-')+'</div></a>'}}
+function viewSuruR(){var A=activeA(),mi=A.filter(isMilking),td=fin.milk.filter(function(m){return m.date===TODAY&&A.some(function(a){return a.kupe===m.cow})}),tm=0,opn={};
+ td.forEach(function(m){tm+=m.kg});fin.ev.forEach(function(e){if(e.type==="vaka"&&e.d.durum!=="Kapandı"&&A.some(function(a){return a.kupe===e.cow}))opn[e.cow]=1});
+ var L=A.filter(function(a){return!q||a.kupe.indexOf(q)>-1}).map(rowAR).sort(function(x,y){return x.rank-y.rank}),miss=mi.length-mi.filter(function(a){return td.some(function(m){return m.cow===a.kupe})}).length;
+ var h='<div class="hd"><h1>Sürü sağlık paneli</h1><a class="btn" href="#hayvanlar">+ Hayvan</a></div><div class="sub">Gerçek veri modu: yalnızca girdiğin kayıtlar görünür.</div><p style="margin:10px 0 0;display:flex;flex-wrap:wrap;gap:0 18px"><a class="back" href="#gunluk">Günlük giriş</a><a class="back" href="#gorevler">Görev merkezi</a><a class="back" href="#stok">Stok</a><a class="back" href="#kpi">KPI raporu</a><a class="back" href="#kalitim">Soy ağacı ve kalıtım</a></p>';
+ if(!A.length)return app.innerHTML=h+'<div class="card"><b>Henüz hayvan eklenmedi</b><p class="note">Başlamak için hayvanlarını ekle, sonra Günlük giriş sayfasından süt miktarlarını gir.</p><p><a class="btn" href="#hayvanlar">+ Hayvan ekle</a></p></div>';
+ h+='<div class="mt" style="margin:12px 0">'+tile("Aktif hayvan",A.length,"sağmal "+mi.length)+tile("Bugünkü süt",td.length?Math.round(tm*10)/10+" kg":"Veri bulunamadı","girilen "+td.length+" / "+mi.length)+tile("Gebe",A.filter(function(a){return a.gebe}).length,"")+tile("Süt arınmada",A.filter(function(a){return inWd(a.kupe).length}).length,"",A.some(function(a){return inWd(a.kupe).length})?"r":"")+tile("Açık vaka",Object.keys(opn).length,"",Object.keys(opn).length?"o":"")+tile("Bugün süt girilmeyen",miss,"sağmal hayvan",miss?"o":"")+'</div>';
+ h+='<input type="search" id="q" placeholder="Küpe numarası ara" value="'+esc(q)+'" aria-label="Küpe numarası ara">'+(L.map(function(x){return x.h}).join("")||'<p class="note">Aramaya uyan hayvan yok.</p>');
+ app.innerHTML=h;var qi=document.getElementById("q");qi.oninput=function(){q=qi.value.trim();var p=qi.selectionStart;viewSuruR();var n=document.getElementById("q");n.focus();n.setSelectionRange(p,p)}}
+function viewGun(){var d=GD&&GD<=TODAY?GD:TODAY,mi=activeA().filter(isMilking),E=fin.env.filter(function(e){return e.date===d})[0]||{};
+ var h='<a class="back" href="#suru">Sürüye dön</a><h1>Günlük giriş</h1><div class="sub">Sağmal hayvanların süt miktarını ve ahır ölçümlerini gir. Boş bıraktığın değer sıfır sayılmaz, kayıt oluşmaz.</div><div class="card" style="margin-top:12px"><div class="frm"><div class="full"><label for="gdt">Tarih</label><input type="date" id="gdt" max="'+TODAY+'" value="'+d+'"></div><div><label for="gt_t">Ahır sıcaklığı (°C)</label><input type="number" step="any" id="gt_t" value="'+(E.temp!=null?E.temp:"")+'"></div><div><label for="gt_r">Bağıl nem (%)</label><input type="number" step="any" id="gt_r" value="'+(E.rh!=null?E.rh:"")+'"></div></div></div>';
+ h+='<h2>Süt miktarı (kg), '+mi.length+' sağmal hayvan</h2>';
+ if(!mi.length)h+='<p class="note">Durumu "Sağmal inek" olan kayıtlı hayvan yok. <a href="#hayvanlar">Hayvan ekle</a>.</p>';
+ else h+='<div class="card">'+mi.map(function(a,i){var m=fin.milk.filter(function(x){return x.cow===a.kupe&&x.date===d})[0],L=milkOf(a.kupe).filter(function(x){return x.date<d}),pv=L[L.length-1];return'<div class="kv" style="align-items:center"><span><b>'+esc(a.kupe)+'</b>'+(pv?' <span class="note">önceki '+pv.kg+'</span>':'')+'</span><input type="number" step="any" min="0" id="mk_'+i+'" style="width:100px" value="'+(m?m.kg:"")+'" aria-label="'+esc(a.kupe)+' süt kg"></div>'}).join("")+'</div>';
+ h+='<p><button class="p" id="gs">Kaydet</button></p>';app.innerHTML=h;
+ document.getElementById("gdt").onchange=function(){GD=val("gdt");viewGun()};
+ document.getElementById("gs").onclick=function(){var n=0,bad="";
+  mi.forEach(function(a,i){var v=document.getElementById("mk_"+i).value.trim(),ix=fin.milk.findIndex(function(x){return x.cow===a.kupe&&x.date===d});
+   if(v===""){if(ix>=0)fin.milk.splice(ix,1);return}var kg=parseFloat(v);if(isNaN(kg)||kg<0||kg>100){bad=a.kupe;return}if(ix>=0)fin.milk[ix].kg=kg;else fin.milk.push({cow:a.kupe,date:d,kg:kg});n++});
+  if(bad){toast(bad+" için süt değeri geçersiz (0 ile 100 kg arası)");return}
+  var t=val("gt_t").trim(),r=val("gt_r").trim(),tv=t===""?null:parseFloat(t),rv=r===""?null:parseFloat(r);
+  if((tv!==null&&(isNaN(tv)||tv<-30||tv>50))||(rv!==null&&(isNaN(rv)||rv<0||rv>100))){toast("Sıcaklık -30 ile 50, nem 0 ile 100 arasında olmalı");return}
+  fin.env=fin.env.filter(function(e){return e.date!==d});if(tv!==null||rv!==null)fin.env.push({date:d,temp:tv,rh:rv});
+  save();updBadge();toast(n+" süt kaydı kaydedildi")}}
+function barnR(){var e=fin.env.filter(function(x){return x.temp!=null}).sort(function(a,b){return a.date<b.date?1:-1})[0];if(!e)return null;var t=e.temp,rh=e.rh;return{t:t,rh:rh,date:e.date,thi:rh==null?null:(1.8*t+32)-(.55-.0055*rh)*(1.8*t-26)}}
+function dayStatsR(){var A=activeA(),mi=A.filter(isMilking),td=fin.milk.filter(function(m){return m.date===TODAY&&A.some(function(a){return a.kupe===m.cow})}),milk=0,ilac=0,vet=0,oth=0,am=0,b=0,ex=0,feed=fin.feed*A.filter(function(a){return a.durum!=="Buzağı"}).length;
+ td.forEach(function(m){milk+=m.kg});
+ fin.entries.forEach(function(e){if(e.d!==TODAY)return;if(e.t==="ilac")ilac+=e.amt;else if(e.t==="vet")vet+=e.amt;else if(e.t==="yem")feed+=e.amt;else oth+=e.amt});
+ fin.rx.forEach(function(r){if(r.start===TODAY)ilac+=r.cost||0});
+ A.forEach(function(a){if(a.gelis<=TODAY)am+=amortDay(a);if(a.sonDogum===TODAY)b++});
+ allTasks().forEach(function(x){if(x.type==="dogum"&&x.left<=7)ex++});
+ var rev=milk*fin.price,cost=feed+ilac+vet+am+oth;return{milk:milk,rev:rev,feed:feed,ilac:ilac,vet:vet,am:am,oth:oth,cost:cost,net:rev-cost,births:b,exp:ex,n:A.length,mn:td.length,mc:mi.length,has:td.length>0}}
+function barnHtmlR(){var b=barnR(),s=dayStatsR();
+ return'<div class="mt">'+tile("Ahır sıcaklığı",b?b.t.toFixed(1).replace(".",",")+" °C":"Veri bulunamadı",b?"son ölçüm "+b.date+(b.thi!=null?", THI "+Math.round(b.thi):""):"Günlük girişten ekle",b&&b.thi>72?"o":"")+tile("Bağıl nem",b&&b.rh!=null?Math.round(b.rh)+" %":"Veri bulunamadı","")+tile("Toplam hayvan",s.n,"sağmal "+s.mc)+tile("Günlük süt",s.has?Math.round(s.milk*10)/10+" kg":"Veri bulunamadı","girilen "+s.mn+" / "+s.mc+" sağmal")+tile("Doğum (bugün)",s.births,"7 günde beklenen: "+s.exp)+tile("Kar/zarar (günlük)",s.has?(s.net>=0?"+":"−")+money(Math.abs(s.net)):"Veri bulunamadı",s.has?"süt geliri "+money(s.rev):"bugün süt girilmedi",s.has?(s.net>=0?"g":"r"):"")+'</div>'+
+ '<h2>Günlük gider: '+money(s.cost)+'</h2><div class="card">'+[["Yem",s.feed],["İlaç",s.ilac],["Veteriner",s.vet],["Amortisman",s.am],["Diğer giderler",s.oth]].map(function(x){return'<div class="kv"><span>'+x[0]+'</span><b>'+money(x[1])+'</b></div>'}).join("")+'</div><p style="margin-top:12px"><a class="btn" href="#gunluk">Günlük giriş</a></p><p class="note">Ölçümler ve süt miktarı elle girilir. Kar/zarar yalnızca bugün girilen süt verisiyle hesaplanır.</p>'}
+function barn(){return REAL()?barnR():barnSim()}
+function dayStats(){return REAL()?dayStatsR():dayStatsSim()}
+function barnHtml(){return REAL()?barnHtmlR():barnHtmlSim()}
+function kpiMilk(){if(REAL()){var from=addD(TODAY,-KD+1),L=fin.milk.filter(function(m){return m.date>=from&&getA(m.cow)}),s=0;L.forEach(function(m){s+=m.kg});
+  return'<div class="card" style="margin-top:8px"><b>Süt verimi</b><div style="font-size:22px;font-weight:700;color:'+(L.length?"var(--ink)":"var(--mut)")+'">'+(L.length?(s/L.length).toFixed(1).replace(".",",")+" kg/hayvan-gün":"Veri bulunamadı")+'</div><div class="note">'+L.length+' süt kaydı</div><div class="note">Girilen süt kayıtlarının ortalaması (hayvan-gün başına). Girilmeyen günler sıfır sayılmaz.</div></div>'}
+ var mk=0;cows.forEach(function(c){mk+=c.today.sut});return'<div class="card" style="margin-top:8px"><b>Süt verimi</b><div style="font-size:22px;font-weight:700;color:var(--mut)">Kayıtlı hayvanlar: veri bulunamadı</div><div class="note">Demo sürü (simülasyon, sensör verisi): '+(mk/cows.length).toFixed(1).replace(".",",")+' kg/inek/gün, '+cows.length+' hayvan. Günlük süt / sağmal inek sayısı.</div></div>'}
+function modeCard(){return'<h2>Veri modu</h2><div class="card"><p style="margin-top:0">Şu an: <b>'+(REAL()?"Gerçek veri":"Demo (simülasyon)")+'</b></p><p class="note">'+(REAL()?'Demo sürü, simülasyon olayları ve örnek uyarılar gizli. Yalnızca girdiğin kayıtlar görünür.':'Sürü sayfasındaki 30 hayvan ve olaylar simülasyondur. Gerçek veri moduna geçince yalnızca kendi girdiğin kayıtlar görünür. Girdiğin kayıtlar silinmez, demo moda her zaman dönebilirsin.')+'</p><button class="p" id="md">'+(REAL()?"Demo moda dön":"Gerçek veri moduna geç")+'</button></div>'}
+function bindMode(){document.getElementById("md").onclick=function(){fin.mode=REAL()?"demo":"gercek";if(!REAL())SIM.on=true;save();applyMode();toast(REAL()?"Gerçek veri modu açıldı":"Demo moda dönüldü");if(location.hash==="#suru")route();else location.hash="#suru"}}
+window.addEventListener("hashchange",route);recalc();route();
+</script></body></html>

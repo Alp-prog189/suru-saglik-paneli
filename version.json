@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "file": "index.html",
-  "sha256": "821590b767a445e2c1e44bd22eb10577a039dccdaa2ba0ab7db424b71ae11a1c",
-  "notes": "Yeni kurumsal tasarım: sol menü, üst arama çubuğu ve gösterge paneli"
+  "sha256": "db592d9e477899f5957fe146d3b5d73596143c812aecdbba5e43943240500389",
+  "notes": "Yeni tasarım: yumuşak kartlar, özet göstergeler, süt grafiği, öncelikli uyarılar ve hızlı işlemler"
 }

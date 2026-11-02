@@ -59,11 +59,81 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .mt{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mt>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}.mt b{display:block;font-size:21px;line-height:1.25;color:var(--c,var(--ink))}.mt span{display:block;font-size:12px;color:var(--mut)}
 #toast{z-index:60}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+/* ---- Kurumsal yerleşim (v1.1) ---- */
+:root{--bg:#f1f3f2;--card:#fff;--ink:#17211e;--mut:#5d6b66;--line:#dce2df;--g:#2f8a5a;--y:#b8921a;--o:#cf7a2c;--r:#bf3a33;--acc:#1d6b58;--soft:#eaefed;--side:#16302a;--sideInk:#c9d8d2;--sideHi:#ffffff;--sideAct:#22453c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1513;--card:#171f1c;--ink:#e3ebe7;--mut:#8fa199;--line:#26322e;--soft:#1e2925;--acc:#6fcfab;--side:#0b1210;--sideInk:#9fb2aa;--sideAct:#18302a}}
+:root[data-theme="dark"]{--bg:#0f1513;--card:#171f1c;--ink:#e3ebe7;--mut:#8fa199;--line:#26322e;--soft:#1e2925;--acc:#6fcfab;--side:#0b1210;--sideInk:#9fb2aa;--sideAct:#18302a}
+body{font:15px/1.45 "Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;padding-bottom:0;font-variant-numeric:tabular-nums}
+#side{position:fixed;top:0;bottom:0;left:0;width:232px;background:var(--side);color:var(--sideInk);display:flex;flex-direction:column;z-index:35;padding-top:env(safe-area-inset-top,0px);overflow-y:auto}
+#side .brand{display:flex;align-items:center;gap:10px;padding:18px 18px 16px;color:var(--sideHi);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.08)}
+#side .brand b{font-size:15px;line-height:1.2;font-weight:600}#side .brand small{display:block;font-size:12px;color:var(--sideInk);font-weight:400}
+#side .mark{width:30px;height:30px;border-radius:7px;background:#2b7a63;display:grid;place-items:center;flex:none}
+#side .grp{margin:14px 0 2px;padding:0 18px;font-size:12px;color:#7f968e}
+#side a.nv{display:flex;align-items:center;gap:11px;padding:8px 18px;margin:1px 8px;border-radius:6px;color:var(--sideInk);text-decoration:none;font-size:14px}
+#side a.nv:hover{background:rgba(255,255,255,.05);color:var(--sideHi)}
+#side a.nv[aria-current=page]{background:var(--sideAct);color:var(--sideHi);box-shadow:inset 3px 0 0 #5fc4a0}
+#side a.nv svg{flex:none;opacity:.9}
+#side .foot{margin-top:auto;padding:14px 18px;font-size:12px;color:#7f968e;border-top:1px solid rgba(255,255,255,.08)}
+#top{position:sticky;margin-left:232px;padding:0 24px;height:58px;justify-content:flex-start;gap:14px;box-shadow:none}
+#top .menu{display:none}
+#top .ttl{font-size:15px;font-weight:600;white-space:nowrap}
+#top .srch{flex:1;max-width:340px;margin-left:12px;position:relative}
+#top .srch input{width:100%;margin:0;padding:8px 12px 8px 34px;border-radius:6px;font-size:14px;background:var(--bg)}
+#top .srch svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mut)}
+#top .sp{flex:1}
+#top .upd{font-size:12px;color:var(--mut);white-space:nowrap}
+.tb{min-height:38px;border-radius:6px;padding:0 12px;font-size:14px}
+main{max-width:1240px;margin:0 0 0 232px;padding:22px 28px 40px}
+@media (min-width:1500px){main{margin-left:calc(232px + (100vw - 232px - 1240px)/2)}}
+h1{font-size:20px;font-weight:600}h2{font-size:15px;font-weight:600;margin:24px 0 8px}
+.card,.row,.al,.mt>div,.tile{border-radius:6px}
+input[type=search],select,input[type=number],input[type=date],input[type=text],textarea,button,.btn{border-radius:6px}
+.btn{padding:8px 14px}
+.row{border-left-width:4px}.al{border-left-width:4px}
+#sh .shc{margin-top:calc(env(safe-area-inset-top,0px) + 58px);border-radius:0 0 8px 8px;max-width:720px;margin-left:auto;margin-right:24px}
+#toast{bottom:24px}
+/* gösterge paneli */
+.dh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.dh .sub{margin-top:4px}
+.dg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.wd{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0;display:flex;flex-direction:column}
+.wd.span2{grid-column:span 2}
+.wh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.wh b{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px}
+.wh a{font-size:13px;color:var(--acc);text-decoration:none}.wh a:hover{text-decoration:underline}
+.big{font-size:30px;font-weight:600;line-height:1;letter-spacing:-.01em}.big small{font-size:14px;font-weight:400;color:var(--mut);margin-left:6px;letter-spacing:0}
+.lbl{font-size:13px;color:var(--mut)}
+.br{margin-top:12px}.br div{display:flex;justify-content:space-between;font-size:13px}.br .bar{height:6px;margin-top:5px}
+.ids{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.ids a{font-size:13px;padding:3px 9px;border:1px solid var(--line);border-radius:4px;color:var(--ink);text-decoration:none;background:var(--soft)}
+.ids a:hover{border-color:var(--acc)}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.st div span{display:block;font-size:12px;color:var(--mut)}.st div b{font-size:22px;font-weight:600}
+.dn{display:flex;align-items:center;gap:18px}
+.lg{display:grid;gap:6px;font-size:13px}.lg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:7px;background:var(--c)}
+.lst{margin:0;padding:0;list-style:none}.lst li{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:14px}.lst li:first-child{border-top:0}
+.lst a{color:var(--ink);text-decoration:none;font-weight:600}.lst a:hover{color:var(--acc)}
+.pill{font-size:12px;padding:1px 8px;border-radius:4px;background:var(--c);color:#fff;white-space:nowrap}
+.emp{font-size:13px;color:var(--mut);margin:0}
+.demo{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--y);border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:14px}
+@media (max-width:1150px){.dg{grid-template-columns:repeat(2,minmax(0,1fr))}.wd.span2{grid-column:span 2}}
+@media (max-width:900px){
+ #side{transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 30px rgba(0,0,0,.3)}
+ body.so #side{transform:none}
+ #scr{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:34;display:none}body.so #scr{display:block}
+ #top{margin-left:0;padding:0 12px}#top .menu{display:inline-flex}#top .upd{display:none}#top .srch{margin-left:0}
+ main{margin-left:0;padding:16px}
+ #sh .shc{margin-right:auto}
+}
+@media (max-width:640px){.dg{grid-template-columns:1fr}.wd.span2{grid-column:auto}#top .ttl{display:none}}
+@media (prefers-reduced-motion:reduce){#side{transition:none}}
+#side nav{position:static;display:block;border:0;background:none;padding:0;justify-content:initial}
+#side nav a{flex:none;max-width:none;text-align:left}
 </style></head><body>
-<header id="top"><button class="tb" id="bn" aria-label="Ahır paneli"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Ahır paneli</span></button><button class="tb" id="bb" aria-label="Alarmlar ve yaklaşan işler"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bd" id="bd" hidden></span></button></header>
+<aside id="side" aria-label="Ana menü"><a class="brand" href="#panel"><span class="mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M9 20v-5h6v5"/></svg></span><span><b>Sürü Sağlık Paneli</b><small>Sürü yönetimi</small></span></a><nav id="nav"><div class="grp">Genel</div><a class="nv" href="#panel"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span>Gösterge paneli</span></a><a class="nv" href="#suru"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Sürü listesi</span></a><a class="nv" href="#alarmlar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span>Alarmlar ve işler</span></a><div class="grp">Kayıtlar</div><a class="nv" href="#hayvanlar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><span>Hayvanlar</span></a><a class="nv" href="#gunluk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><span>Günlük giriş</span></a><a class="nv" href="#gorevler"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg><span>Görevler</span></a><a class="nv" href="#receteler"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><path d="M8.5 8.5l7 7"/></svg><span>Reçeteler</span></a><div class="grp">Üreme ve genetik</div><a class="nv" href="#kalitim"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v5M5 17v-2a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v2"/></svg><span>Soy ağacı ve kalıtım</span></a><div class="grp">İşletme</div><a class="nv" href="#maliyet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg><span>Maliyet</span></a><a class="nv" href="#stok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg><span>Stok</span></a><a class="nv" href="#kpi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>KPI raporu</span></a><div class="grp">Sistem</div><a class="nv" href="#ayarlar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Puanlama ve ayarlar</span></a></nav><div class="foot" id="sfoot"></div></aside><div id="scr"></div><header id="top"><button class="tb menu" id="mn" aria-label="Menüyü aç"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><span class="ttl" id="ttl">Gösterge paneli</span><div class="srch"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input type="search" id="gs" placeholder="Küpe ya da inek numarası" aria-label="Küpe ya da inek numarası ara"></div><span class="sp"></span><span class="upd" id="upd"></span><button class="tb" id="bn" aria-label="Ahır paneli"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg><span>Ahır paneli</span></button><button class="tb" id="bb" aria-label="Alarmlar ve yaklaşan işler"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bd" id="bd" hidden></span></button></header>
 <main id="app"></main>
 <div id="sh" hidden role="dialog" aria-modal="true" aria-labelledby="sht"><div class="shbg"></div><div class="shc"><div class="shh"><b id="sht"></b><button id="shx">Kapat</button></div><div id="shb"></div></div></div>
-<nav id="nav"><a href="#suru">Sürü</a><a href="#alarmlar">Alarm</a><a href="#maliyet">Maliyet</a><a href="#receteler">Reçete</a><a href="#ayarlar">Puan</a></nav>
+
 <div id="toast" role="status"></div>
 <script>
 var GR={R:"Rumen ve sindirim",S:"Meme ve süt",A:"Aktivite ve yürüyüş",I:"İç ısı ve solunum",Y:"Yem ve su"};
@@ -141,9 +211,8 @@ function viewSet(){var h='<h1>Puanlama ayarları</h1><div class="sub">Her inek g
  Object.keys(GR).forEach(function(g){document.getElementById("w"+g).oninput=function(e){cfg.w[g]=+e.target.value;upd()}});
  document.getElementById("fm").oninput=function(e){cfg.fm=+e.target.value;upd()};
  document.getElementById("rs").onclick=function(){cfg.w={R:30,S:25,A:20,I:15,Y:10};cfg.fm=1.5;recalc();viewSet()};bindBackup();bindMode();upd()}
-function route(){ensureFin();applyMode();var h=location.hash.slice(1)||"suru",key=h.split("-")[0];
- document.querySelectorAll("nav a").forEach(function(a){var on=a.getAttribute("href")==="#"+(/^(inek|hayvan|hayvanlar|hayvanduzenle|soy|kalitim|gorevler|stok|kpi|gunluk)$/.test(key)?"suru":key);if(on)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
- if(key==="inek")viewInek(h.split("-")[1]);else if(key==="alarmlar")viewAlarm();else if(key==="ayarlar")viewSet();else if(key==="maliyet")viewMal();else if(key==="receteler")viewRx();else if(key==="hayvanlar")viewAn();else if(key==="hayvan")viewHv(h.split("-")[1]);else if(key==="hayvanduzenle")viewAn(h.split("-")[1]);else if(key==="soy"){var kk=fromSid(h.split("-")[1]);if(kk)viewSoy(kk);else location.hash="#suru"}else if(key==="kalitim")viewKal();else if(key==="gorevler")viewGor();else if(key==="stok")viewStok();else if(key==="kpi")viewKpi();else if(key==="gunluk")viewGun();else viewSuru();window.scrollTo(0,0)}
+function route(){ensureFin();applyMode();var h=location.hash.slice(1)||"panel",key=h.split("-")[0];navMark(key);
+ if(key==="panel")viewPanel();else if(key==="inek")viewInek(h.split("-")[1]);else if(key==="alarmlar")viewAlarm();else if(key==="ayarlar")viewSet();else if(key==="maliyet")viewMal();else if(key==="receteler")viewRx();else if(key==="hayvanlar")viewAn();else if(key==="hayvan")viewHv(h.split("-")[1]);else if(key==="hayvanduzenle")viewAn(h.split("-")[1]);else if(key==="soy"){var kk=fromSid(h.split("-")[1]);if(kk)viewSoy(kk);else location.hash="#suru"}else if(key==="kalitim")viewKal();else if(key==="gorevler")viewGor();else if(key==="stok")viewStok();else if(key==="kpi")viewKpi();else if(key==="gunluk")viewGun();else viewSuru();window.scrollTo(0,0)}
 var fin={price:18,feed:140,kur:49.8,entries:[],rx:[],animals:[]};
 try{var sv=JSON.parse(localStorage.getItem("sc-v1"));if(sv)fin=Object.assign(fin,sv)}catch(e){}
 function save(){try{localStorage.setItem("sc-v1",JSON.stringify(fin))}catch(e){}}
@@ -613,5 +682,62 @@ function kpiMilk(){if(REAL()){var from=addD(TODAY,-KD+1),L=fin.milk.filter(funct
  var mk=0;cows.forEach(function(c){mk+=c.today.sut});return'<div class="card" style="margin-top:8px"><b>Süt verimi</b><div style="font-size:22px;font-weight:700;color:var(--mut)">Kayıtlı hayvanlar: veri bulunamadı</div><div class="note">Demo sürü (simülasyon, sensör verisi): '+(mk/cows.length).toFixed(1).replace(".",",")+' kg/inek/gün, '+cows.length+' hayvan. Günlük süt / sağmal inek sayısı.</div></div>'}
 function modeCard(){return'<h2>Veri modu</h2><div class="card"><p style="margin-top:0">Şu an: <b>'+(REAL()?"Gerçek veri":"Demo (simülasyon)")+'</b></p><p class="note">'+(REAL()?'Demo sürü, simülasyon olayları ve örnek uyarılar gizli. Yalnızca girdiğin kayıtlar görünür.':'Sürü sayfasındaki 30 hayvan ve olaylar simülasyondur. Gerçek veri moduna geçince yalnızca kendi girdiğin kayıtlar görünür. Girdiğin kayıtlar silinmez, demo moda her zaman dönebilirsin.')+'</p><button class="p" id="md">'+(REAL()?"Demo moda dön":"Gerçek veri moduna geç")+'</button></div>'}
 function bindMode(){document.getElementById("md").onclick=function(){fin.mode=REAL()?"demo":"gercek";if(!REAL())SIM.on=true;save();applyMode();toast(REAL()?"Gerçek veri modu açıldı":"Demo moda dönüldü");if(location.hash==="#suru")route();else location.hash="#suru"}}
+/* ---- Kurumsal yerleşim: menü, arama, gösterge paneli ---- */
+var NAVMAP={inek:"suru",hayvan:"hayvanlar",hayvanduzenle:"hayvanlar",soy:"kalitim"};
+function navMark(key){var k=NAVMAP[key]||key,t="";
+ document.querySelectorAll("#side a.nv").forEach(function(a){var on=a.getAttribute("href")==="#"+k;if(on){a.setAttribute("aria-current","page");t=a.textContent}else a.removeAttribute("aria-current")});
+ document.getElementById("ttl").textContent=t||"Sürü Sağlık Paneli";document.body.classList.remove("so");
+ document.getElementById("sfoot").textContent=REAL()?"Gerçek veri modu":"Demo modu: veriler simülasyondur";updTime()}
+function updTime(){var d=new Date();document.getElementById("upd").textContent="Son güncelleme "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")}
+setInterval(updTime,60000);
+document.getElementById("mn").onclick=function(){document.body.classList.toggle("so")};
+document.getElementById("scr").onclick=function(){document.body.classList.remove("so")};
+document.getElementById("gs").onkeydown=function(e){if(e.key!=="Enter")return;var v=this.value.trim();if(!v)return;
+ var c=cows.filter(function(x){return String(x.id)===v})[0],a=getA(v)||fin.animals.filter(function(x){return x.kupe.toLowerCase()===v.toLowerCase()})[0];
+ if(c)location.hash="#inek-"+c.id;else if(a)location.hash="#hayvan-"+a.id;else{toast("Bu numarada hayvan bulunamadı: "+v);return}this.value="";this.blur()};
+function pBar(l,n,tot,c){return'<div class="br '+c+'"><div><span>'+l+'</span><b>'+n+' / '+tot+'</b></div><div class="bar"><i style="width:'+(tot?Math.round(n/tot*100):0)+'%"></i></div></div>'}
+function pIds(L){return L.length?'<div class="ids">'+L.slice(0,12).map(function(k){var h=href(String(k));return h?'<a href="'+h+'">'+esc(label(String(k)))+'</a>':'<a>'+esc(label(String(k)))+'</a>'}).join("")+(L.length>12?'<a href="#suru">+'+(L.length-12)+'</a>':"")+'</div>':""}
+function pW(t,link,body,cls){return'<section class="wd'+(cls?" "+cls:"")+'"><div class="wh"><b>'+t+'</b>'+(link?'<a href="'+link[0]+'">'+link[1]+'</a>':"")+'</div>'+body+'</section>'}
+function pDonut(parts){var tot=parts.reduce(function(s,p){return s+p[1]},0),C=2*Math.PI*38,off=0,s='<svg width="104" height="104" viewBox="0 0 104 104" aria-hidden="true"><circle cx="52" cy="52" r="38" fill="none" stroke="var(--soft)" stroke-width="14"/>';
+ if(tot)parts.forEach(function(p){if(!p[1])return;var L=p[1]/tot*C;s+='<circle cx="52" cy="52" r="38" fill="none" stroke="var(--'+p[2]+')" stroke-width="14" stroke-dasharray="'+L.toFixed(2)+' '+(C-L).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 52 52)"/>';off+=L});
+ return s+'<text x="52" y="57" text-anchor="middle" font-size="18" font-weight="600" fill="var(--ink)">'+tot+'</text></svg>'}
+function uniq(L){var o=[];L.forEach(function(x){x=String(x);if(x&&o.indexOf(x)<0)o.push(x)});return o}
+function viewPanel(){var R=REAL(),T=allTasks(),A=activeA(),n=nHerd(),h="";
+ var cnt={g:0,y:0,o:0,r:0};cows.forEach(function(c){cnt[c.cls]++});
+ var avg=cows.length?Math.round(mean(cows.map(function(c){return c.score}))):null;
+ h+='<div class="dh"><div><h1>Gösterge paneli</h1><div class="sub">'+(n?"Sürüde "+n+" aktif hayvan"+(avg!=null?", ortalama sağlık puanı "+avg:""):"Henüz hayvan yok")+'. Bugün '+new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"long",year:"numeric",weekday:"long"})+'.</div></div><a class="btn" href="#hayvanlar">+ Hayvan ekle</a></div>';
+ if(!R)h+='<div class="demo"><span><b>Demo veri gösteriliyor.</b> Sürü, sensör ve olay verileri simülasyondur.</span><a class="back" style="margin:0" href="#ayarlar">Gerçek veri moduna geç</a></div>';
+ h+='<div class="dg">';
+ // 1 kızgınlık
+ var heat=uniq(cows.filter(function(c){return c.al.some(function(r){return/Kızgınlık/.test(r.n)})}).map(function(c){return c.id}).concat(T.filter(function(x){return x.type==="tohum"}).map(function(x){return x.cow})));
+ h+=pW("Kızgınlık ve tohumlama",["#alarmlar","Tümü"],'<div class="big">'+heat.length+'<small>hayvan</small></div><div class="lbl">Tohumlama penceresinde ya da kızgınlık belirtisi gösteren</div>'+(heat.length?pIds(heat):'<p class="emp" style="margin-top:12px">'+(R?"Sensör bağlanınca kızgınlık tespitleri burada görünür.":"Şu an kızgınlık tespiti yok.")+'</p>'));
+ // 2 sağlık
+ if(!R){var sick=cnt.r+cnt.o+cnt.y;
+  h+=pW("Sağlık uyarıları",["#suru","Sürü listesi"],'<div class="big">'+(cnt.r+cnt.o)+'<small>hasta ya da şüpheli</small></div><div class="lbl">'+sick+' hayvan izlemede</div>'+pBar("Acil müdahale",cnt.r,n,"r")+pBar("Revire ayır",cnt.o,n,"o")+pBar("İzle, destek öner",cnt.y,n,"y"))}
+ else{var opn=uniq(fin.ev.filter(function(e){return e.type==="vaka"&&e.d&&e.d.durum!=="Kapandı"&&A.some(function(a){return a.kupe===e.cow})}).map(function(e){return e.cow})),md=A.filter(function(a){return milkDrop(a.kupe)}).map(function(a){return a.kupe});
+  h+=pW("Sağlık uyarıları",["#suru","Sürü listesi"],'<div class="big">'+uniq(opn.concat(md)).length+'<small>hayvan</small></div><div class="lbl">Açık vaka ya da süt düşüşü olan</div>'+pBar("Açık vaka",opn.length,A.length,"r")+pBar("Süt düşüşü",md.length,A.length,"o")+pIds(uniq(opn.concat(md))))}
+ // 3 sensörler
+ var sN=R?0:cows.length;
+ h+=pW("Sensörler",null,'<div class="st"><div><span>Aktif</span><b>'+sN+'</b></div><div><span>Veri göndermeyen</span><b>0</b></div><div><span>Gecikmeli veri</span><b>0</b></div></div><p class="emp" style="margin-top:14px">'+(R?"Henüz cihaz bağlı değil. Cihazlar bağlandığında durumları burada izlenir.":"Simüle sensörler. Gerçek cihazlar bağlandığında bu kart onların durumunu gösterecek.")+'</p>');
+ // 4 geçiş dönemi
+ var fresh=cows.filter(function(c){return c.fresh}),frR=fresh.filter(function(c){return c.cls==="o"||c.cls==="r"}),
+  calv=T.filter(function(x){return(x.type==="dogum"||/doğum/i.test(x.t))&&x.left>=0&&x.left<=7&&!/sonrası/i.test(x.t)}),dry=T.filter(function(x){return x.type==="kuru"||/Kuruya/.test(x.t)});
+ h+=pW("Geçiş dönemi",["#gorevler","Görevler"],'<div class="big">'+(frR.length+calv.length)+'<small>dikkat gerektiren</small></div><div class="lbl">Doğum öncesi ve sonrası 21 gün</div>'+pBar("Taze ineklerde risk",frR.length,fresh.length,"r")+pBar("7 gün içinde doğum",calv.length,n,"o")+pBar("Kuruya çıkarılacak",dry.length,n,"y")+pIds(uniq(frR.map(function(c){return c.id}).concat(calv.map(function(x){return x.cow})))));
+ // 5 işler
+ var late=T.filter(function(x){return x.left<0}),tod=T.filter(function(x){return x.left===0}),wk=T.filter(function(x){return x.left>0&&x.left<=7});
+ var top=T.filter(function(x){return x.left<=7}).slice(0,6);
+ h+=pW("Yaklaşan işler",["#alarmlar","Tümünü aç"],'<div class="st"><div><span>Geciken</span><b style="color:var(--r)">'+late.length+'</b></div><div><span>Bugün</span><b style="color:var(--o)">'+tod.length+'</b></div><div><span>7 gün içinde</span><b>'+wk.length+'</b></div></div><ul class="lst" style="margin-top:12px">'+(top.map(function(x){var c=x.left<0?"r":x.left===0?"o":"g",hr=x.link||(x.cow?href(x.cow):""),d=x.left<0?Math.abs(x.left)+" gün gecikti":x.left===0?"Bugün":x.left===1?"Yarın":x.left+" gün sonra";return'<li><span>'+(x.cow?(hr?'<a href="'+hr+'">'+esc(label(x.cow))+'</a> ':'<b>'+esc(label(x.cow))+'</b> '):"")+esc(x.t)+'</span><span class="pill '+c+'">'+d+'</span></li>'}).join("")||'<li><span class="emp">Önümüzdeki 7 günde iş yok.</span></li>')+'</ul>',"span2");
+ // 6 üreme
+ var F=A.filter(function(a){return a.cinsiyet!=="Erkek"&&a.durum!=="Buzağı"&&a.durum!=="Tosun"}),gb=F.filter(function(a){return a.gebe}).length,th=F.filter(function(a){return a.tohum&&!a.gebe}).length,bo=F.length-gb-th;
+ h+=pW("Üreme durumu",["#kpi","KPI raporu"],F.length?'<div class="dn">'+pDonut([["Gebe",gb,"g"],["Tohumlandı",th,"y"],["Boş",bo,"mut"]])+'<div class="lg"><span class="g"><i></i>Gebe (teyitli): <b>'+gb+'</b></span><span class="y"><i></i>Tohumlandı, teyit bekliyor: <b>'+th+'</b></span><span class="n"><i></i>Boş: <b>'+bo+'</b></span></div></div><p class="emp" style="margin-top:12px">Kayıtlı dişi hayvanlardan hesaplanır.</p>':'<p class="emp">Kayıtlı dişi hayvan yok. Hayvan ekleyip tohumlama tarihini girdiğinizde üreme durumu burada görünür.</p><p style="margin:12px 0 0"><a class="btn" href="#hayvanlar">+ Hayvan ekle</a></p>');
+ // 7 arınma
+ var wd=fin.rx.filter(function(r){return+r.wd>0&&wdLeft(r)>0});
+ h+=pW("Süt arınmasındakiler",["#receteler","Reçeteler"],'<div class="big">'+uniq(wd.map(function(r){return r.cow})).length+'<small>hayvan</small></div><div class="lbl">Sütü tanka alınmamalı</div>'+(wd.length?'<ul class="lst" style="margin-top:10px">'+wd.slice(0,5).map(function(r){var hr=href(String(r.cow));return'<li><span>'+(hr?'<a href="'+hr+'">'+esc(label(String(r.cow)))+'</a>':esc(label(String(r.cow))))+' '+esc(r.drug)+'</span><span class="pill r">'+wdLeft(r)+' gün</span></li>'}).join("")+'</ul>':'<p class="emp" style="margin-top:12px">Arınmada hayvan yok.</p>'));
+ // 8 en düşük puan
+ if(!R){var low=cows.slice().sort(function(a,b){return a.score-b.score}).slice(0,5);
+  h+=pW("En düşük sağlık puanı",["#suru","Sürü listesi"],'<ul class="lst">'+low.map(function(c){return'<li><span><a href="#inek-'+c.id+'">İnek '+c.id+'</a> <span class="lbl">'+esc((c.top||"").toLowerCase())+'</span></span><span class="pill '+c.cls+'">'+c.score+'</span></li>'}).join("")+'</ul>')}
+ else{var ml=A.filter(isMilking).length,td=fin.milk.filter(function(m){return m.date===TODAY&&A.some(function(a){return a.kupe===m.cow})}),kg=td.reduce(function(s,m){return s+m.kg},0);
+  h+=pW("Bugünkü süt",["#gunluk","Günlük giriş"],'<div class="big">'+(td.length?(Math.round(kg*10)/10).toLocaleString("tr-TR"):"–")+'<small>kg</small></div><div class="lbl">'+td.length+' / '+ml+' sağmal inek için girildi</div>')}
+ app.innerHTML=h+'</div>'}
 window.addEventListener("hashchange",route);recalc();route();
 </script></body></html>

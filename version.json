@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "file": "index.html",
-  "sha256": "0b94cf9da5eb5dd133a6a49f5575b0d062f3b359a425ac800ba275b85c558231",
-  "notes": "İlk sürüm"
+  "sha256": "821590b767a445e2c1e44bd22eb10577a039dccdaa2ba0ab7db424b71ae11a1c",
+  "notes": "Yeni kurumsal tasarım: sol menü, üst arama çubuğu ve gösterge paneli"
 }

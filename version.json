@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "file": "index.html",
-  "sha256": "29d301111f9e224963b919a94adb04a0a7702d9d25c5ca4614165ae343ad7f86",
-  "notes": "Cihazlar, veri akışı ve Excel/CSV içe aktarma eklendi"
+  "sha256": "b22201f149213259cd8d2beaef805bbb2568017aa86b2bd2f6681c21b3f4a0fa",
+  "notes": "Apple Sağlık içe aktarma ve günlük aktivite grafiği eklendi"
 }

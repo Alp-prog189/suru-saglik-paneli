@@ -1,6 +1,6 @@
 {
-  "version": "1.5.0",
+  "version": "1.6.0",
   "file": "index.html",
-  "sha256": "b22201f149213259cd8d2beaef805bbb2568017aa86b2bd2f6681c21b3f4a0fa",
-  "notes": "Apple Sağlık içe aktarma ve günlük aktivite grafiği eklendi"
+  "sha256": "bba7e298941f0f3bc7257932b7a415cc65e081cdb85ccccc92cbfb21fdf5ae74",
+  "notes": "İlaç ve stok yönetimi eklendi: ilaç kataloğu, stok hareketleri, reçete bağlantısı ve otomatik arınma"
 }

@@ -1,6 +1,6 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "file": "index.html",
-  "sha256": "bba7e298941f0f3bc7257932b7a415cc65e081cdb85ccccc92cbfb21fdf5ae74",
-  "notes": "İlaç ve stok yönetimi eklendi: ilaç kataloğu, stok hareketleri, reçete bağlantısı ve otomatik arınma"
+  "sha256": "f3582dd204678880728417403e275ef55cdb051a2de060819be9e86c8fb18088",
+  "notes": "Akıllı kızgınlık değerlendirmesi: aktivite, döngü geçmişi, doğum, tohumlama, gebelik ve gözlem kayıtları birlikte değerlendirilir; olasılık ve güven düzeyi gösterilir. Yeni Kızgınlık ve üreme sayfası."
 }

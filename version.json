@@ -1,6 +1,6 @@
 {
-  "version": "1.7.0",
+  "version": "1.8.0",
   "file": "index.html",
-  "sha256": "f3582dd204678880728417403e275ef55cdb051a2de060819be9e86c8fb18088",
-  "notes": "Akıllı kızgınlık değerlendirmesi: aktivite, döngü geçmişi, doğum, tohumlama, gebelik ve gözlem kayıtları birlikte değerlendirilir; olasılık ve güven düzeyi gösterilir. Yeni Kızgınlık ve üreme sayfası."
+  "sha256": "f2b7d77eb241ead27606746f595e85221a00531cacb2a8f1e0c7fb8b44c39680",
+  "notes": "Gerçek veri modu bulutta: e-posta ile giriş/kayıt, çiftlik oluşturma, kayıtların Supabase'e otomatik eşitlenmesi, internet yokken bekletme. Demo modu bu bilgisayarda kalır."
 }

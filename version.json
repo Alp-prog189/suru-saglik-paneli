@@ -1,6 +1,6 @@
 {
-  "version": "1.8.1",
+  "version": "1.8.2",
   "file": "index.html",
-  "sha256": "d550a02a5e22c1814272f11e23796efd06fa5cbcdd3e9c18781175789eb90e77",
-  "notes": "Bulut girişi düzeltildi: giriş istekleri auth-proxy aracısı üzerinden gider (exe adındaki Türkçe karakter Supabase'te oturum hatasına yol açıyordu)."
+  "sha256": "9d04a78a0ecffbaf488c8c91c473c8099a959c7a6f5e583db6de0a40fe4b3416",
+  "notes": "Çiftliğe çalışan ve veteriner davet etme: ayarlarda üye listesi, e-postayla davet, rol değiştirme, üye çıkarma, çiftlikten ayrılma."
 }

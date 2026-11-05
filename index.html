@@ -1328,7 +1328,7 @@ function sbMsg(j,st){var m=j&&(j.msg||j.message||j.error_description||j.error)||
  if(/at least 6|Password should be/i.test(m))return"Şifre en az 6 karakter olmalı.";
  if(/valid email|invalid format|Unable to validate email/i.test(m))return"E-posta adresi geçerli görünmüyor.";
  if(st===429||/rate limit|security purposes/i.test(m))return"Çok sık deneme yapıldı. Bir dakika bekleyip tekrar dene.";
- if(/JWT expired/i.test(m))return"Oturum süresi doldu.";
+ if(/JWT expired/i.test(m))return"Oturum süresi doldu.";if(/granting user|saving new user/i.test(m))return"Supabase oturumu açamadı. Giriş aracısı (auth-proxy) kurulmalı"+(BL.pxMsg?": "+BL.pxMsg:".");
  return m?m+(st?" ("+st+")":""):"Sunucu hatası ("+st+")"}
 function sbFetch(path,o){o=o||{};var h={apikey:SB.key};if(o.auth!==false&&BL.sess)h.Authorization="Bearer "+BL.sess.access_token;if(o.body!==undefined)h["Content-Type"]="application/json";if(o.headers)Object.keys(o.headers).forEach(function(k){h[k]=o.headers[k]});
  return fetch(SB.url+path,{method:o.method||"GET",headers:h,body:o.body!==undefined?JSON.stringify(o.body):undefined}).then(function(r){return r.text().then(function(t){var j=null;try{j=t?JSON.parse(t):null}catch(e){}
@@ -1337,16 +1337,25 @@ function sbFetch(path,o){o=o||{};var h={apikey:SB.key};if(o.auth!==false&&BL.ses
 function authSet(s){if(!s||!s.access_token){BL.sess=null;localStorage.removeItem("sc-auth");return}
  BL.sess={access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(s.expires_in||3600),user:s.user?{id:s.user.id,email:s.user.email}:(BL.sess&&BL.sess.user)};lsSet("sc-auth",BL.sess)}
 function authRefresh(){if(BL.refreshP)return BL.refreshP;if(!BL.sess||!BL.sess.refresh_token)return Promise.reject(Object.assign(new Error("Oturum açık değil."),{login:true}));
- BL.refreshP=sbFetch("/auth/v1/token?grant_type=refresh_token",{method:"POST",auth:false,body:{refresh_token:BL.sess.refresh_token}}).then(function(x){authSet(x.j);BL.refreshP=null},
+ BL.refreshP=authPost("token","grant_type=refresh_token",{refresh_token:BL.sess.refresh_token}).then(function(x){authSet(x.j);BL.refreshP=null},
   function(e){BL.refreshP=null;if(!e.net){authSet(null);e.login=true;e.message="Oturum süresi doldu. Yeniden giriş yap."}throw e});return BL.refreshP}
 function sbReq(path,o){o=o||{};if(!BL.sess)return Promise.reject(Object.assign(new Error("Oturum açık değil."),{login:true}));
  var p=BL.sess.expires_at*1000<Date.now()+60000?authRefresh():Promise.resolve();
  return p.then(function(){return sbFetch(path,o)}).catch(function(e){if(e.status===401&&!o._re){o._re=1;return authRefresh().then(function(){return sbFetch(path,o)})}throw e})}
-/* ---------- oturum ---------- */
-function authSignIn(email,pw){return sbFetch("/auth/v1/token?grant_type=password",{method:"POST",auth:false,body:{email:email,password:pw}}).then(function(x){authSet(x.j)})}
-function authSignUp(email,pw){return sbFetch("/auth/v1/signup",{method:"POST",auth:false,body:{email:email,password:pw}}).then(function(x){if(x.j&&x.j.access_token){authSet(x.j);return"giris"}
+/* Giriş istekleri "auth-proxy" aracısı (Supabase Edge Function) üzerinden gider. Neden: exe'nin tarayıcı
+   kimliğinde "ü" harfi var ve Supabase bunu oturum kaydına yazarken hata veriyor (UTF8 0xfc). Aracı
+   kimliği temiz bir adla değiştirir. Aracı kurulu değilse ya da yanlış ayarlıysa doğrudan bağlanılır. */
+function authPost(p,qs,body,tok){var o={method:"POST",auth:false,body:body};if(tok)o.headers={Authorization:"Bearer "+tok};
+ var direct=function(){return sbFetch("/auth/v1/"+p+(qs?"?"+qs:""),o)};
+ if(BL.px===false)return direct();
+ return sbFetch("/functions/v1/auth-proxy?p="+p+(qs?"&"+qs:""),o).then(function(x){BL.px=true;return x},function(e){
+  var m=e.body&&(e.body.message||e.body.msg||"")||"";
+  if(!e.net&&(e.status===404||(e.status===401&&/JWT|authorization header/i.test(m))||(e.status===400&&/İzin verilmeyen/.test(m)))){BL.px=false;BL.pxMsg=e.status===401?"Giriş aracısında JWT doğrulaması açık; kapatılmalı.":"Giriş aracısı (auth-proxy) kurulu değil.";return direct()}
+  throw e})}/* ---------- oturum ---------- */
+function authSignIn(email,pw){return authPost("token","grant_type=password",{email:email,password:pw}).then(function(x){authSet(x.j)})}
+function authSignUp(email,pw){return authPost("signup","",{email:email,password:pw}).then(function(x){if(x.j&&x.j.access_token){authSet(x.j);return"giris"}
   if(x.j&&x.j.identities&&!x.j.identities.length)throw new Error("Bu e-posta zaten kayıtlı. Giriş yapmayı dene.");return"onay"})}
-function authRecover(email){return sbFetch("/auth/v1/recover",{method:"POST",auth:false,body:{email:email}})}
+function authRecover(email){return authPost("recover","",{email:email})}
 function farmsList(){return sbReq("/rest/v1/farms?select=id,name,created_at&order=created_at").then(function(x){return(x.j||[]).map(function(f){return{id:idc(f.id),name:f.name}})})}
 function farmCreate(name){var id=uid();return sbReq("/rest/v1/farms",{method:"POST",body:{id:id,name:name},headers:{Prefer:"return=minimal"}}).then(function(){return{id:id,name:name}})}
 /* ---------- veri kümeleri: demo (yerel) / bulut ---------- */
@@ -1529,7 +1538,7 @@ function openFarm(f){if(BL.active&&BL.farm&&BL.farm.id!==f.id){cloudDiff();if(BL
  var changed=!BL.farm||BL.farm.id!==f.id;BL.farm=f;lsSet("sc-farm",f);if(changed){localStorage.removeItem("sc-cloud");localStorage.removeItem("sc-cloud-snap");BL.active&&(BL.active=false)}
  useCloud(true);applyMode();toast(f.name+" açılıyor…");location.hash="#panel";cloudPull().then(function(ok){if(ok){route();toast(f.name+": gerçek veri modu açık")}})}
 function cloudLogout(btn){if(BL.active){cloudDiff();if(BL.pend&&btn.dataset.ok!=="1"){btn.dataset.ok="1";btn.textContent=BL.pend+" değişiklik henüz gönderilmedi. Yine de çık";return}}
- var t=BL.sess&&BL.sess.access_token;if(t)try{fetch(SB.url+"/auth/v1/logout",{method:"POST",headers:{apikey:SB.key,Authorization:"Bearer "+t}}).catch(function(){})}catch(e){}
+ var t=BL.sess&&BL.sess.access_token;if(t)try{authPost("logout","",{},t).catch(function(){})}catch(e){}
  if(BL.active)useCloud(false);authSet(null);BL.farm=null;localStorage.removeItem("sc-farm");localStorage.removeItem("sc-cloud");localStorage.removeItem("sc-cloud-snap");BL.snap={};applyMode();toast("Çıkış yapıldı");location.hash="#ayarlar";route()}
 /* ---------- ayarlar: veri modu kartı ---------- */
 function modeCard(){if(BL.active){cloudDiff();return'<h2>Veri modu</h2><div class="card"><p style="margin-top:0">Şu an: <b>Gerçek veri (bulut)</b></p><div class="kv"><span>Çiftlik</span><b>'+esc(BL.farm.name)+'</b></div><div class="kv"><span>Hesap</span><span>'+esc(BL.sess&&BL.sess.user&&BL.sess.user.email||"oturum kapalı")+'</span></div><div class="kv"><span>Durum</span><span>'+esc(document.getElementById("cst")?document.getElementById("cst").textContent.replace("● ",""):"")+'</span></div><div class="kv"><span>Bekleyen değişiklik</span><span>'+BL.pend+'</span></div><div class="kv"><span>Son eşitleme</span><span>'+(BL.lastPull||BL.lastPush?new Date(Math.max(BL.lastPull,BL.lastPush)).toLocaleString("tr-TR"):"–")+'</span></div>'+(BL.nbad?'<p class="note dw">'+BL.nbad+' kayıt sunucu tarafından kabul edilmedi: '+esc(BL.badMsg||"")+'</p>':'')+'<p class="note">Kayıtlar her değişiklikten birkaç saniye sonra buluta gönderilir. İnternet yoksa bekler, bağlantı gelince gönderilir. Bu bilgisayarda da bir kopyası tutulur.</p><p style="display:flex;gap:8px;flex-wrap:wrap"><button class="p" id="csync">Şimdi eşitle</button><button id="md">Demo moda dön</button><a class="btn ghost" href="#giris">Hesap ve çiftlik</a></p></div>'}

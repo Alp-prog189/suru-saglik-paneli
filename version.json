@@ -1,6 +1,6 @@
 {
-  "version": "1.8.0",
+  "version": "1.8.1",
   "file": "index.html",
-  "sha256": "f2b7d77eb241ead27606746f595e85221a00531cacb2a8f1e0c7fb8b44c39680",
-  "notes": "Gerçek veri modu bulutta: e-posta ile giriş/kayıt, çiftlik oluşturma, kayıtların Supabase'e otomatik eşitlenmesi, internet yokken bekletme. Demo modu bu bilgisayarda kalır."
+  "sha256": "d550a02a5e22c1814272f11e23796efd06fa5cbcdd3e9c18781175789eb90e77",
+  "notes": "Bulut girişi düzeltildi: giriş istekleri auth-proxy aracısı üzerinden gider (exe adındaki Türkçe karakter Supabase'te oturum hatasına yol açıyordu)."
 }
